@@ -1,7 +1,9 @@
 package com.harmonycare.domain.member.service;
 
 import com.harmonycare.domain.member.entity.Member;
+import com.harmonycare.domain.member.exception.MemberErrorCode;
 import com.harmonycare.domain.member.repository.MemberRepository;
+import com.harmonycare.global.exception.GlobalException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,7 +16,6 @@ public class MemberService {
 
     public Member getByEmail(String email) {
         return memberRepository.findByEmail(email)
-                .orElseThrow(() -> new NotFoundException("Not Found Member By Email."));
+                .orElseThrow(() -> new GlobalException(MemberErrorCode.MEMBER_NOT_FOUND));
     }
-
 }

@@ -1,9 +1,9 @@
-package com.harmonycare.global.utility;
+package com.harmonycare.global.util;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import org.springframework.http.HttpStatus;
 
-public class ApiUtility {
+public class ApiUtil {
 
     public static <T> ApiSuccessResult<T> success(HttpStatus httpStatus, T response) {
         return new ApiSuccessResult<>(httpStatus.value(), response);

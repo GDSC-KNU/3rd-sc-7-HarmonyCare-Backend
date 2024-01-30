@@ -35,7 +35,9 @@ public class AuthController {
     }
 
     @PostMapping("/google")
-    public ResponseEntity<?> googleLogin(@RequestParam("code") String authcode) {
-        return oauth2Service.getGoogleAccessToken(authcode);
+    public ResponseEntity<String> googleLogin(@RequestParam("code") String authcode) {
+        String response = oauth2Service.getGoogleAccessToken(authcode);
+
+        return ResponseEntity.ok().body(response);
     }
 }

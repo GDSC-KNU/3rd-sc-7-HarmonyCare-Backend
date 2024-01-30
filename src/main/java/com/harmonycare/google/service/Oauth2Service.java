@@ -1,6 +1,5 @@
 package com.harmonycare.google.service;
 
-import com.harmonycare.domain.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -25,7 +24,7 @@ public class Oauth2Service {
 
     private final RestTemplate restTemplate;
 
-    public ResponseEntity<String> getGoogleAccessToken(String authcode) {
+    public String getGoogleAccessToken(String authcode) {
         Map<String, String> params = new HashMap<>();
 
         params.put("code", authcode);
@@ -40,6 +39,6 @@ public class Oauth2Service {
             return null;
 //            throw new GlobalException()
         }
-        return responseEntity;
+        return responseEntity.getBody();
     }
 }

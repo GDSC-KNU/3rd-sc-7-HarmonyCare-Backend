@@ -1,5 +1,6 @@
 package com.harmonycare.domain.checklist.entity;
 
+import java.util.*;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -20,9 +21,21 @@ public class CheckList {
     @Column(name = "title")
     private String title;
 
+   /*
+   @ElementCollection
+    @CollectionTable(name = "checklist_days", joinColumns =
+        @JoinColumn(name = "checklist_id")
+    )
+    @Column(name = "day")
     @Enumerated(EnumType.STRING)
-    @Column(name = "days")
-    private Day days;
+    private List<Day> dayList = new ArrayList<>();
+    -> 쓰지말고 일대다 연관관계로 풀어서 사용하자 +
+            Day를 DayEntity로 한번 래핑헤서 사용 -> 나중에 db에서 값을 바꿨을때 추적하기 쉬움
+    */
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "checklist_id")
+    private List<DayEntity> dayList = new ArrayList<>();
 
     @Column(name = "check_time")
     private LocalDateTime checkTime;
@@ -31,10 +44,10 @@ public class CheckList {
     private Boolean isCheck;
 
     @Builder
-    public CheckList(Long id, String title, Day days, LocalDateTime checkTime, Boolean isCheck) {
+    public CheckList(Long id, String title, List<DayEntity> dayList, LocalDateTime checkTime, Boolean isCheck) {
         this.id = id;
         this.title = title;
-        this.days = days;
+        this.dayList = dayList;
         this.checkTime = checkTime;
         this.isCheck = isCheck;
     }

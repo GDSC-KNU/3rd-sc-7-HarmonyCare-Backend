@@ -7,29 +7,31 @@ services:
       dockerfile: Dockerfile
     container_name: harmonycare-backend
     depends_on:
-      - db
-    links:
-      - db:app_db
+      - database
     ports:
       - "48080:8080"
     restart: always
 
-  db:
+  database:
     image: mysql/mysql-server:8.0
-    container_name: harmonycare-mysql
+    container_name: harmonycare-database
     environment:
       MYSQL_DATABASE: harmonycare_db
       MYSQL_USER: harmonycare_user
       MYSQL_PASSWORD: tUiEXi7yUgGAGVRHvuyg
       MYSQL_ROOT_PASSWORD: tUiEXi7yUgGAGVRHvuyg
       TZ: 'Asia/Seoul'
+    expose:
+      - "3306"
+    ports:
+      - "3306:3306"
     restart: always
     volumes:
-      - harmonycare-mysql:/var/lib/mysql
+      - harmonycare-database:/var/lib/mysql
     command:
       - --character-set-server=utf8mb4
       - --collation-server=utf8mb4_unicode_ci
       - --skip-character-set-client-handshake
 
 volumes:
-  harmonycare-mysql:
+  harmonycare-database:

@@ -28,7 +28,7 @@ public class CheckList {
     )
     @Column(name = "day")
     @Enumerated(EnumType.STRING)
-    private List<Day> dayList = new ArrayList<>();
+    private List<Day> days = new ArrayList<>();
     -> 쓰지말고 일대다 연관관계로 풀어서 사용하자 +
             Day를 DayEntity로 한번 래핑헤서 사용 -> 나중에 db에서 값을 바꿨을때 추적하기 쉬움
     */

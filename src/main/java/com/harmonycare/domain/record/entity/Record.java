@@ -1,34 +1,43 @@
-package com.harmonycare.domain.checklist.entity;
+package com.harmonycare.domain.record.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Entity
-@Table(name = "checklist_days")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class DayEntity {
+public class Record {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "record_id")
     private Long id;
 
+    @Column(name = "record_task")
     @Enumerated(EnumType.STRING)
-    private Day day;
+    private RecordTask recordTask;
+
+    @Column(name = "record_time")
+    private LocalDateTime recordTime;
+
+    @Column(name = "amount")
+    private int amount;
 
     @Builder
-    public DayEntity(Long id, Day day) {
+    public Record(Long id, RecordTask recordTask, LocalDateTime recordTime, int amount) {
         this.id = id;
-        this.day = day;
+        this.recordTask = recordTask;
+        this.recordTime = recordTime;
+        this.amount = amount;
     }
-
-
 }

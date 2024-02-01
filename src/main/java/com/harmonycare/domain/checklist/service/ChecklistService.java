@@ -10,6 +10,7 @@ import com.harmonycare.domain.checklist.exception.ChecklistErrorCode;
 import com.harmonycare.domain.checklist.repository.ChecklistRepository;
 import com.harmonycare.domain.member.entity.Member;
 import com.harmonycare.global.exception.GlobalException;
+import com.harmonycare.global.util.DateTimeUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,13 +32,13 @@ public class ChecklistService {
      * CREATE
      */
     @Transactional
-    public Long saveCheckList(ChecklistSaveRequest checkListSaveRequest, Member member) {
-        LocalDateTime resultDateTime = createLocalDateTime(checkListSaveRequest);
-        List<Day> days = checkListSaveRequest.days();
+    public Long saveCheckList(ChecklistSaveRequest requestBody, Member member) {
+        LocalDateTime resultDateTime = DateTimeUtil.stringToLocalDateTime(requestBody.checkTime());
+        List<DayEntity> dayEntityList = Day.dayListToDayEntityList(requestBody.days());
 
         Checklist checkList = Checklist.builder()
-                .title(checkListSaveRequest.title())
-                .dayList(Day.getDayEntity(days))
+                .title(requestBody.title())
+                .dayList(dayEntityList)
                 .checkTime(resultDateTime)
                 .isCheck(false)
                 .member(member)
@@ -56,7 +57,7 @@ public class ChecklistService {
 
         return ChecklistReadResponse.builder()
                 .title(checkList.getTitle())
-                .days(createDayList(checkList.getDayList()))
+                .days(Day.dayEntityListToDayList(checkList.getDayList()))
                 .checkTime(String.valueOf(checkList.getCheckTime()))
                 .isCheck(checkList.getIsCheck())
                 .build();
@@ -85,30 +86,5 @@ public class ChecklistService {
                 .orElseThrow(() -> new GlobalException(ChecklistErrorCode.CHECKLIST_NOT_FOUND));
 
         checkListRepository.delete(deleteChecklist);
-    }
-
-
-    /**
-     * 사용자가 설정한 체크리스트 시간에 따라 LocalDateTime을 생성하는 로직
-     */
-    private LocalDateTime createLocalDateTime(ChecklistSaveRequest checkListSaveRequest) {
-        String customDateTimeString = checkListSaveRequest.checkTime(); // 11:23
-        LocalDateTime currentDate = LocalDateTime.now(); // 2024-01-30 T 22:35:17.348
-        LocalTime userTime = LocalTime.parse(customDateTimeString, DateTimeFormatter.ofPattern("HH:mm")); //T 11:23
-        LocalDateTime resultDateTime = LocalDateTime.of(currentDate.toLocalDate(), userTime); // 2024-01-30 T 11:23
-        return resultDateTime;
-    }
-
-    /**
-     * List<DayEntity>의 객체를 List<Day>로 바꿔주는 로직
-     */
-    private List<Day> createDayList(List<DayEntity> dayEntityList) {
-        List<Day> dayList = new ArrayList<>();
-        //null 예외 처리 해야할 듯
-        for (DayEntity dayEntity : dayEntityList) {
-            dayList.add(dayEntity.getDay());
-        }
-
-        return dayList;
     }
 }

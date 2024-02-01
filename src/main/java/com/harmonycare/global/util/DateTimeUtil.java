@@ -10,7 +10,7 @@ public class DateTimeUtil {
         return localDateTime.format(formatter);
     }
 
-    public static LocalDateTime localStringToLocalDateTime(String dateTimeStr) {
+    public static LocalDateTime stringToLocalDateTime(String dateTimeStr) {
         return LocalDateTime.parse(dateTimeStr, formatter);
     }
 }

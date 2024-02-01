@@ -2,6 +2,7 @@ package com.harmonycare.domain.checklist.entity;
 
 import com.harmonycare.domain.checklist.dto.request.ChecklistUpdateRequest;
 import com.harmonycare.domain.member.entity.Member;
+import com.harmonycare.global.util.DateTimeUtil;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -12,6 +13,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -23,6 +25,7 @@ import java.util.List;
 
 @Entity
 @Getter
+@Table(name = "checklist")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Checklist {
 
@@ -57,11 +60,15 @@ public class Checklist {
     }
 
     public void update(ChecklistUpdateRequest request) {
-        if (request.title() != null) this.title = request.title();
-        if (request.days() != null && !request.days().isEmpty()) {
-            this.dayList = Day.getDayEntity(request.days());
-        }
-        // TODO: 2/1/24 CheckTime Update 구현
+        if (request.title() != null)
+            this.title = request.title();
+
+        if (request.days() != null)
+            this.dayList = Day.dayListToDayEntityList(request.days());
+
+        if (request.checkTime() != null)
+            this.checkTime = DateTimeUtil.stringToLocalDateTime(request.checkTime());
+
     }
 
     public void check() {

@@ -30,7 +30,7 @@ public class BabyService {
         Baby baby = Baby.builder()
                 .name(requestBody.name())
                 .gender(Gender.valueOf(requestBody.gender()))
-                .birthdate(DateTimeUtil.localStringToLocalDateTime(requestBody.birthDate()))
+                .birthdate(DateTimeUtil.stringToLocalDateTime(requestBody.birthDate()))
                 .birthWeight(requestBody.birthWeight())
                 .member(member)
                 .build();

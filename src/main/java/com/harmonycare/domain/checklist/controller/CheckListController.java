@@ -43,4 +43,12 @@ public class CheckListController {
         Long newCheckListId = checkListService.updateCheckList(requestBody, oldCheckListId);
         return ResponseEntity.ok().body(success(HttpStatus.OK, newCheckListId));
     }
+
+    @DeleteMapping("/{checklistId}")
+    public ResponseEntity<ApiSuccessResult<?>> delete(
+       @PathVariable("checklistId") Long deleteId) {
+        checkListService.deleteCheckList(deleteId);
+
+        return ResponseEntity.ok().body(success(HttpStatus.OK));
+    }
 }

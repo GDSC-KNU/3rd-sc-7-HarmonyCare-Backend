@@ -22,7 +22,7 @@ public class CheckList {
     private String title;
 
    /*
-   @ElementCollection
+    @ElementCollection
     @CollectionTable(name = "checklist_days", joinColumns =
         @JoinColumn(name = "checklist_id")
     )

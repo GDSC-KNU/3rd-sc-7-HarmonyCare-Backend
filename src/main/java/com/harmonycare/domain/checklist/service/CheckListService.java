@@ -82,6 +82,17 @@ public class CheckListService {
         return updateCheckList.getId();
     }
 
+    /**
+     * DELETE
+     */
+    @Transactional
+    public void deleteCheckList(Long deleteCheckId) {
+        CheckList deleteCheckList = checkListRepository.findById(deleteCheckId)
+                .orElseThrow(() -> new GlobalException(ChecklistErrorCode.CHECKLIST_NOT_FOUND));
+
+        checkListRepository.delete(deleteCheckList);
+    }
+
 
     /**
      * 사용자가 설정한 체크리스트 시간에 따라 LocalDateTime을 생성하는 로직

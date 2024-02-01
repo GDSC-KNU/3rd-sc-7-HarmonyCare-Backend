@@ -17,6 +17,7 @@ spring:
   oauth2:
     google:
       token-uri: https://oauth2.googleapis.com/token
+      resource-uri: https://www.googleapis.com/oauth2/v2/userinfo
       client-id: 185976520158-phphtutm302clototd3rqgecng4a4bg2.apps.googleusercontent.com
       client-secret: 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
       redirect-uri: http://localhost:8080

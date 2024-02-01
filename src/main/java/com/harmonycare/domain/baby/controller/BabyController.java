@@ -2,7 +2,6 @@ package com.harmonycare.domain.baby.controller;
 
 import com.harmonycare.domain.baby.dto.request.BabyCreateRequest;
 import com.harmonycare.domain.baby.dto.response.BabyReadResponse;
-import com.harmonycare.domain.baby.entity.Baby;
 import com.harmonycare.domain.baby.service.BabyService;
 import com.harmonycare.global.security.details.PrincipalDetails;
 import com.harmonycare.global.util.ApiUtil;

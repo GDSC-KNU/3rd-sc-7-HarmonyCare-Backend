@@ -9,6 +9,10 @@ public class ApiUtil {
         return new ApiSuccessResult<>(httpStatus.value(), response);
     }
 
+    public static <T> ApiSuccessResult<T> success(HttpStatus httpStatus) {
+        return new ApiSuccessResult<>(httpStatus.value(), null);
+    }
+
     public static ApiErrorResult error(HttpStatus status, String code, String message) {
         return new ApiErrorResult(status.value(), code, message);
     }

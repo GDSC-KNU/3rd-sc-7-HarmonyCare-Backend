@@ -2,6 +2,7 @@ package com.harmonycare.domain.member.entity;
 
 import com.harmonycare.domain.baby.entity.Baby;
 import com.harmonycare.domain.checklist.entity.Checklist;
+import com.harmonycare.domain.record.entity.Record;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -18,6 +19,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -41,10 +43,13 @@ public class Member {
     private Role role;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Baby> babyList;
+    private List<Baby> babyList = new ArrayList<>();
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Checklist> checklistList;
+    private List<Checklist> checklistList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Record> recordList = new ArrayList<>();
 
     @Builder
     public Member(String email, String password, Role role) {

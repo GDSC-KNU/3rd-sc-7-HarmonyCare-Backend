@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 
 public enum RecordErrorCode implements ErrorCode {
 
-    CHECKLIST_NOT_FOUND(HttpStatus.NOT_FOUND, "Nonexistent Checklist");
+    RECORD_NOT_FOUND(HttpStatus.NOT_FOUND, "Nonexistent record");
 
     private final HttpStatus status;
     private final String message;

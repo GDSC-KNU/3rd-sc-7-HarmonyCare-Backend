@@ -1,11 +1,14 @@
 package com.harmonycare.domain.record.service;
 
+import com.harmonycare.domain.member.entity.Member;
 import com.harmonycare.domain.record.dto.request.RecordSaveRequest;
+import com.harmonycare.domain.record.dto.request.RecordUpdateRequest;
 import com.harmonycare.domain.record.dto.response.RecordReadResponse;
 import com.harmonycare.domain.record.entity.Record;
 import com.harmonycare.domain.record.exception.RecordErrorCode;
 import com.harmonycare.domain.record.repositiry.RecordRepository;
 import com.harmonycare.global.exception.GlobalException;
+import com.harmonycare.global.util.DateTimeUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,13 +27,14 @@ public class RecordService {
      * CREATE
      */
     @Transactional
-    public Long saveRecord(RecordSaveRequest request) {
-        LocalDateTime recordDateTime = createLocalDateTime(request);
+    public Long saveRecord(RecordSaveRequest request, Member member) {
+        LocalDateTime resultDateTime = DateTimeUtil.stringToLocalDateTime(request.recordTime());
 
         Record newRecord = Record.builder()
                 .recordTask(request.recordTask())
-                .recordTime(recordDateTime)
+                .recordTime(resultDateTime)
                 .amount(request.amount())
+                .member(member)
                 .build();
 
         recordRepository.save(newRecord);
@@ -42,7 +46,7 @@ public class RecordService {
      */
     public RecordReadResponse readRecord(Long id) {
         Record findRecord = recordRepository.findById(id)
-                .orElseThrow(() -> new GlobalException(RecordErrorCode.CHECKLIST_NOT_FOUND));
+                .orElseThrow(() -> new GlobalException(RecordErrorCode.RECORD_NOT_FOUND));
 
         return RecordReadResponse.builder()
                 .recordTime(String.valueOf(findRecord.getRecordTime()))
@@ -55,18 +59,13 @@ public class RecordService {
      * UPDATE
      */
     @Transactional
-    public Long updateRecord(RecordSaveRequest request, Long oldRecordId) {
-        LocalDateTime updateRecordTime = createLocalDateTime(request);
+    public Long updateRecord(RecordUpdateRequest request, Long oldRecordId) {
+        LocalDateTime resultDateTime = DateTimeUtil.stringToLocalDateTime(request.recordTime());
 
-        Record oldRecord = recordRepository.findById(oldRecordId)
-                .orElseThrow(() -> new GlobalException(RecordErrorCode.CHECKLIST_NOT_FOUND));
+        Record newRecord = recordRepository.findById(oldRecordId)
+                .orElseThrow(() -> new GlobalException(RecordErrorCode.RECORD_NOT_FOUND));
 
-        Record newRecord = Record.builder()
-                .id(oldRecord.getId())
-                .recordTask(request.recordTask())
-                .recordTime(updateRecordTime)
-                .amount(request.amount())
-                .build();
+        newRecord.update(request);
 
         recordRepository.save(newRecord);
         return newRecord.getId();
@@ -78,29 +77,10 @@ public class RecordService {
     @Transactional
     public void deleteRecord(Long deleteRecordId) {
         Record deleteRecord = recordRepository.findById(deleteRecordId)
-                .orElseThrow(() -> new GlobalException(RecordErrorCode.CHECKLIST_NOT_FOUND));
+                .orElseThrow(() -> new GlobalException(RecordErrorCode.RECORD_NOT_FOUND));
 
         recordRepository.delete(deleteRecord);
     }
 
-    /**
-     * 사용자가 설정한 체크리스트 시간에 따라 LocalDateTime을 생성하는 로직
-     */
-    private LocalDateTime createLocalDateTime(RecordSaveRequest recordSaveRequest) {
-
-        // 사용자가 보낸 문자열
-        String userDateString = recordSaveRequest.recordTime();
-
-        // 사용자가 보낸 문자열을 LocalDateTime으로 파싱
-        LocalDateTime userDateTime = parseStringToDateTime(userDateString);
-
-        return userDateTime;
-    }
-
-    // 문자열을 LocalDateTime으로 파싱하는 메서드
-    private static LocalDateTime parseStringToDateTime(String dateString) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        return LocalDateTime.parse(dateString, formatter);
-    }
 
 }

@@ -25,8 +25,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BabyController {
     private final BabyService babyService;
-
-
     /**
      * 아기 추가
      *

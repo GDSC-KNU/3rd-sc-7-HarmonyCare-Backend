@@ -22,13 +22,14 @@ services:
       MYSQL_ROOT_PASSWORD: tUiEXi7yUgGAGVRHvuyg
       TZ: 'Asia/Seoul'
     expose:
-      - "3306"
+      - "48081"
     ports:
-      - "3306:3306"
+      - "48081:48081"
     restart: always
     volumes:
       - harmonycare-database:/var/lib/mysql
     command:
+      - --port=48081
       - --character-set-server=utf8mb4
       - --collation-server=utf8mb4_unicode_ci
       - --skip-character-set-client-handshake

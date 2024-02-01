@@ -1,12 +1,14 @@
 package com.harmonycare.domain.checklist.service;
 
-import com.harmonycare.domain.checklist.dto.request.CheckListSaveRequest;
-import com.harmonycare.domain.checklist.dto.response.CheckListReadResponse;
-import com.harmonycare.domain.checklist.entity.CheckList;
+import com.harmonycare.domain.checklist.dto.request.ChecklistSaveRequest;
+import com.harmonycare.domain.checklist.dto.request.ChecklistUpdateRequest;
+import com.harmonycare.domain.checklist.dto.response.ChecklistReadResponse;
+import com.harmonycare.domain.checklist.entity.Checklist;
 import com.harmonycare.domain.checklist.entity.Day;
 import com.harmonycare.domain.checklist.entity.DayEntity;
 import com.harmonycare.domain.checklist.exception.ChecklistErrorCode;
-import com.harmonycare.domain.checklist.repository.CheckListRepository;
+import com.harmonycare.domain.checklist.repository.ChecklistRepository;
+import com.harmonycare.domain.member.entity.Member;
 import com.harmonycare.global.exception.GlobalException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,23 +23,24 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class CheckListService {
+public class ChecklistService {
 
-    private final CheckListRepository checkListRepository;
+    private final ChecklistRepository checkListRepository;
 
     /**
      * CREATE
      */
     @Transactional
-    public Long saveCheckList(CheckListSaveRequest checkListSaveRequest) {
+    public Long saveCheckList(ChecklistSaveRequest checkListSaveRequest, Member member) {
         LocalDateTime resultDateTime = createLocalDateTime(checkListSaveRequest);
         List<Day> days = checkListSaveRequest.days();
 
-        CheckList checkList = CheckList.builder()
+        Checklist checkList = Checklist.builder()
                 .title(checkListSaveRequest.title())
-                .dayList(createDayEntity(days))
+                .dayList(Day.getDayEntity(days))
                 .checkTime(resultDateTime)
                 .isCheck(false)
+                .member(member)
                 .build();
 
         checkListRepository.save(checkList);
@@ -47,11 +50,11 @@ public class CheckListService {
     /**
      * READ
      */
-    public CheckListReadResponse readCheckList(Long checklistId) {
-        CheckList checkList = checkListRepository.findById(checklistId)
+    public ChecklistReadResponse readCheckList(Long checklistId) {
+        Checklist checkList = checkListRepository.findById(checklistId)
                 .orElseThrow(() -> new GlobalException(ChecklistErrorCode.CHECKLIST_NOT_FOUND));
 
-        return CheckListReadResponse.builder()
+        return ChecklistReadResponse.builder()
                 .title(checkList.getTitle())
                 .days(createDayList(checkList.getDayList()))
                 .checkTime(String.valueOf(checkList.getCheckTime()))
@@ -63,23 +66,14 @@ public class CheckListService {
      * UPDATE
      */
     @Transactional
-    public Long updateCheckList(CheckListSaveRequest checkListSaveRequest, Long oldCheckListId) {
-        LocalDateTime resultDateTime = createLocalDateTime(checkListSaveRequest);
-        List<Day> days = checkListSaveRequest.days();
-
-        CheckList oldCheckList = checkListRepository.findById(oldCheckListId)
+    public Long updateCheckList(ChecklistUpdateRequest requestBody, Long oldCheckListId) {
+        Checklist checklist = checkListRepository.findById(oldCheckListId)
                 .orElseThrow(() -> new GlobalException(ChecklistErrorCode.CHECKLIST_NOT_FOUND));
 
-        CheckList updateCheckList = CheckList.builder()
-                .id(oldCheckList.getId()) // 기존의 checklist_id 값을 가져와서 업데이트
-                .title(checkListSaveRequest.title())
-                .dayList(createDayEntity(days))
-                .checkTime(resultDateTime)
-                .isCheck(oldCheckList.getIsCheck())
-                .build();
+        checklist.update(requestBody);
 
-        checkListRepository.save(updateCheckList);
-        return updateCheckList.getId();
+        checkListRepository.save(checklist);
+        return checklist.getId();
     }
 
     /**
@@ -87,35 +81,22 @@ public class CheckListService {
      */
     @Transactional
     public void deleteCheckList(Long deleteCheckId) {
-        CheckList deleteCheckList = checkListRepository.findById(deleteCheckId)
+        Checklist deleteChecklist = checkListRepository.findById(deleteCheckId)
                 .orElseThrow(() -> new GlobalException(ChecklistErrorCode.CHECKLIST_NOT_FOUND));
 
-        checkListRepository.delete(deleteCheckList);
+        checkListRepository.delete(deleteChecklist);
     }
 
 
     /**
      * 사용자가 설정한 체크리스트 시간에 따라 LocalDateTime을 생성하는 로직
      */
-    private LocalDateTime createLocalDateTime(CheckListSaveRequest checkListSaveRequest) {
+    private LocalDateTime createLocalDateTime(ChecklistSaveRequest checkListSaveRequest) {
         String customDateTimeString = checkListSaveRequest.checkTime(); // 11:23
         LocalDateTime currentDate = LocalDateTime.now(); // 2024-01-30 T 22:35:17.348
         LocalTime userTime = LocalTime.parse(customDateTimeString, DateTimeFormatter.ofPattern("HH:mm")); //T 11:23
         LocalDateTime resultDateTime = LocalDateTime.of(currentDate.toLocalDate(), userTime); // 2024-01-30 T 11:23
         return resultDateTime;
-    }
-
-    /**
-     *  List<Day>의 객체를 List<DayEntity>로 바꿔주는 로직
-     */
-    private List<DayEntity> createDayEntity(List<Day> days) {
-        List<DayEntity> dayEntities = new ArrayList<>();
-        //null 예외 처리 해야할 듯
-        for (Day day : days) {
-            dayEntities.add(DayEntity.builder().day(day).build());
-        }
-
-        return dayEntities;
     }
 
     /**

@@ -1,6 +1,7 @@
 package com.harmonycare.domain.member.entity;
 
 import com.harmonycare.domain.baby.entity.Baby;
+import com.harmonycare.domain.checklist.entity.Checklist;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -41,6 +42,9 @@ public class Member {
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Baby> babyList;
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Checklist> checklistList;
 
     @Builder
     public Member(String email, String password, Role role) {

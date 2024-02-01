@@ -4,7 +4,7 @@ import com.harmonycare.global.exception.ErrorCode;
 import org.springframework.http.HttpStatus;
 
 public enum Oauth2ErrorCode implements ErrorCode {
-    MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "Nonexistent Member");
+    FAILED_GET_ACCESS_TOKEN(HttpStatus.BAD_REQUEST, "구글 ACCESS TOKEN 발급 실패");
 
     private final HttpStatus status;
     private final String message;

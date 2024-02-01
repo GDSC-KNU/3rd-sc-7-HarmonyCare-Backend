@@ -75,7 +75,7 @@ public class JwtTokenProvider {
                 .split(","))
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
-        Member member = memberService.getByEmail(claims.getSubject());
+        Member member = memberService.findMemberByEmail(claims.getSubject());
         return new UsernamePasswordAuthenticationToken(new PrincipalDetails(member), "", authorities);
     }
 

@@ -21,22 +21,23 @@ import static com.harmonycare.global.util.ApiUtil.success;
 @RequestMapping("/record")
 @RequiredArgsConstructor
 public class RecordController {
-
     private final RecordService recordService;
 
     @PostMapping
     public ResponseEntity<ApiUtil.ApiSuccessResult<Long>> save(
-            @RequestBody RecordSaveRequest request)
-    {
+            @RequestBody RecordSaveRequest request
+    ) {
         Long recordId = recordService.saveRecord(request);
+
         return ResponseEntity.ok().body(success(HttpStatus.CREATED, recordId));
     }
 
     @GetMapping("/{recordId}")
     public ResponseEntity<ApiUtil.ApiSuccessResult<RecordReadResponse>> read(
-            @PathVariable("recordId") Long id) {
-
+            @PathVariable("recordId") Long id
+    ) {
         RecordReadResponse response = recordService.readRecord(id);
+
         return ResponseEntity.ok().body(ApiUtil.success(HttpStatus.OK, response));
     }
 
@@ -46,6 +47,7 @@ public class RecordController {
             @PathVariable("recordId") Long id
     ) {
         Long recordId = recordService.updateRecord(request, id);
+
         return ResponseEntity.ok().body(success(HttpStatus.OK, recordId));
     }
 
@@ -54,6 +56,7 @@ public class RecordController {
             @PathVariable("recordId") Long id
     ) {
         recordService.deleteRecord(id);
+
         return ResponseEntity.ok().body(success(HttpStatus.OK));
     }
 

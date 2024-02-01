@@ -4,7 +4,5 @@ import com.harmonycare.domain.checklist.entity.Day;
 
 import java.util.List;
 
-public record CheckListSaveRequest(String title, List<Day> days, String checkTime) {
-
-    
+public record ChecklistSaveRequest(String title, List<Day> days, String checkTime) {
 }

@@ -13,8 +13,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "checklist_days")
 @Getter
+@Table(name = "checklist_days")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class DayEntity {
 
@@ -29,6 +29,4 @@ public class DayEntity {
         this.id = id;
         this.day = day;
     }
-
-
 }

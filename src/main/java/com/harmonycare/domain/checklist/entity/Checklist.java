@@ -1,13 +1,19 @@
 package com.harmonycare.domain.checklist.entity;
 
+import com.harmonycare.domain.checklist.dto.request.ChecklistUpdateRequest;
+import com.harmonycare.domain.member.entity.Member;
+import com.harmonycare.global.util.DateTimeUtil;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,29 +25,22 @@ import java.util.List;
 
 @Entity
 @Getter
+@Table(name = "checklist")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class CheckList {
+public class Checklist {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "checklist_id")
     private Long id;
 
+    @ManyToOne(fetch = FetchType.LAZY, targetEntity = Member.class)
+    @JoinColumn(name = "member_id")
+    private Member member;
+
     @Column(name = "title")
     private String title;
 
-   /*
-    @ElementCollection
-    @CollectionTable(name = "checklist_days", joinColumns =
-        @JoinColumn(name = "checklist_id")
-    )
-    @Column(name = "day")
-    @Enumerated(EnumType.STRING)
-    private List<Day> days = new ArrayList<>();
-    -> 쓰지말고 일대다 연관관계로 풀어서 사용하자 +
-            Day를 DayEntity로 한번 래핑헤서 사용 -> 나중에 db에서 값을 바꿨을때 추적하기 쉬움
-    */
-
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JoinColumn(name = "checklist_id")
     private List<DayEntity> dayList = new ArrayList<>();
 
@@ -52,11 +51,27 @@ public class CheckList {
     private Boolean isCheck;
 
     @Builder
-    public CheckList(Long id, String title, List<DayEntity> dayList, LocalDateTime checkTime, Boolean isCheck) {
-        this.id = id;
+    public Checklist(Member member, String title, List<DayEntity> dayList, LocalDateTime checkTime, Boolean isCheck) {
+        this.member = member;
         this.title = title;
         this.dayList = dayList;
         this.checkTime = checkTime;
         this.isCheck = isCheck;
+    }
+
+    public void update(ChecklistUpdateRequest request) {
+        if (request.title() != null)
+            this.title = request.title();
+
+        if (request.days() != null)
+            this.dayList = Day.dayListToDayEntityList(request.days());
+
+        if (request.checkTime() != null)
+            this.checkTime = DateTimeUtil.stringToLocalDateTime(request.checkTime());
+
+    }
+
+    public void check() {
+        this.isCheck = !this.isCheck;
     }
 }

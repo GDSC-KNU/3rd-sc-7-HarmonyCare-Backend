@@ -8,11 +8,11 @@ import com.harmonycare.domain.baby.exception.BabyErrorCode;
 import com.harmonycare.domain.baby.repository.BabyRepository;
 import com.harmonycare.domain.member.entity.Member;
 import com.harmonycare.global.exception.GlobalException;
+import com.harmonycare.global.util.DateTimeUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,7 +30,7 @@ public class BabyService {
         Baby baby = Baby.builder()
                 .name(requestBody.name())
                 .gender(Gender.valueOf(requestBody.gender()))
-                .birthdate(LocalDateTime.parse(requestBody.birthDate(), format))
+                .birthdate(DateTimeUtil.stringToLocalDateTime(requestBody.birthDate()))
                 .birthWeight(requestBody.birthWeight())
                 .member(member)
                 .build();

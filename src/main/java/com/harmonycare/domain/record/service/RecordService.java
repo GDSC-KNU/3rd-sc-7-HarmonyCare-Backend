@@ -1,6 +1,5 @@
 package com.harmonycare.domain.record.service;
 
-import com.harmonycare.domain.checklist.dto.request.CheckListSaveRequest;
 import com.harmonycare.domain.record.dto.request.RecordSaveRequest;
 import com.harmonycare.domain.record.dto.response.RecordReadResponse;
 import com.harmonycare.domain.record.entity.Record;
@@ -8,7 +7,6 @@ import com.harmonycare.domain.record.exception.RecordErrorCode;
 import com.harmonycare.domain.record.repositiry.RecordRepository;
 import com.harmonycare.global.exception.GlobalException;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

@@ -6,5 +6,5 @@ import lombok.Builder;
 import java.util.List;
 
 @Builder
-public record CheckListReadResponse(String title, List<Day> days, String checkTime, Boolean isCheck) {
+public record ChecklistReadResponse(String title, List<Day> days, String checkTime, Boolean isCheck) {
 }

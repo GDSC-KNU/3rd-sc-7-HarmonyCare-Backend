@@ -1,9 +1,8 @@
 package com.harmonycare.domain.baby.dto.response;
 
 import com.harmonycare.domain.baby.entity.Baby;
+import com.harmonycare.global.util.DateTimeUtil;
 import lombok.Builder;
-
-import java.time.format.DateTimeFormatter;
 
 @Builder
 public record BabyReadResponse(
@@ -14,12 +13,10 @@ public record BabyReadResponse(
 ) {
 
     public static BabyReadResponse from(Baby baby) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-
         return BabyReadResponse.builder()
                 .name(baby.getName())
                 .gender(baby.getGender().name())
-                .birthDate(baby.getBirthdate().format(formatter))
+                .birthDate(DateTimeUtil.localDateTimeToString(baby.getBirthdate()))
                 .birthWeight(baby.getBirthWeight())
                 .build();
     }

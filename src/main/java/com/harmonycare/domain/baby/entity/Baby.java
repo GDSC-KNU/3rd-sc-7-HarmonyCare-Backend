@@ -21,8 +21,8 @@ import java.time.LocalDateTime;
 
 @Entity
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "baby")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Baby {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "baby_id")

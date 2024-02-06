@@ -33,7 +33,7 @@ public class RecordService {
         Record newRecord = Record.builder()
                 .recordTask(request.recordTask())
                 .recordTime(resultDateTime)
-                .amount(request.amount())
+                .description(request.description())
                 .member(member)
                 .build();
 
@@ -51,7 +51,7 @@ public class RecordService {
         return RecordReadResponse.builder()
                 .recordTime(String.valueOf(findRecord.getRecordTime()))
                 .recordTask(findRecord.getRecordTask())
-                .amount(findRecord.getAmount())
+                .description(findRecord.getDescription())
                 .build();
     }
 

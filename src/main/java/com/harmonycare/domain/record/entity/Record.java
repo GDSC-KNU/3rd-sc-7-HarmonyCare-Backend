@@ -43,16 +43,16 @@ public class Record {
     @Column(name = "record_time")
     private LocalDateTime recordTime;
 
-    @Column(name = "amount")
-    private int amount;
+    @Column(name = "description")
+    private String description;
 
     @Builder
-    public Record(Long id, Member member, RecordTask recordTask, LocalDateTime recordTime, int amount) {
+    public Record(Long id, Member member, RecordTask recordTask, LocalDateTime recordTime, String description) {
         this.id = id;
         this.member = member;
         this.recordTask = recordTask;
         this.recordTime = recordTime;
-        this.amount = amount;
+        this.description = description;
     }
 
     public void update(RecordUpdateRequest request) {
@@ -64,6 +64,8 @@ public class Record {
             this.recordTime = DateTimeUtil.stringToLocalDateTime(request.recordTime());
         }
 
-        this.amount = request.amount();
+        if (request.description() != null) {
+            this.description = request.description();
+        }
     }
 }

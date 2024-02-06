@@ -81,6 +81,4 @@ public class RecordService {
 
         recordRepository.delete(deleteRecord);
     }
-
-
 }

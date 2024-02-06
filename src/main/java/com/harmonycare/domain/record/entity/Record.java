@@ -1,5 +1,6 @@
 package com.harmonycare.domain.record.entity;
 
+import com.harmonycare.domain.baby.entity.Baby;
 import com.harmonycare.domain.member.entity.Member;
 import com.harmonycare.domain.record.dto.request.RecordSaveRequest;
 import com.harmonycare.domain.record.dto.request.RecordUpdateRequest;
@@ -33,8 +34,8 @@ public class Record {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
-    private Member member;
+    @JoinColumn(name = "baby_id")
+    private Baby baby;
 
     @Column(name = "record_task")
     @Enumerated(EnumType.STRING)
@@ -47,15 +48,17 @@ public class Record {
     private String description;
 
     @Builder
-    public Record(Long id, Member member, RecordTask recordTask, LocalDateTime recordTime, String description) {
+    public Record(Long id, Baby baby, RecordTask recordTask, LocalDateTime recordTime, String description) {
         this.id = id;
-        this.member = member;
+        this.baby = baby;
         this.recordTask = recordTask;
         this.recordTime = recordTime;
         this.description = description;
     }
 
+
     public void update(RecordUpdateRequest request) {
+
         if (request.recordTask() != null) {
             this.recordTask = request.recordTask();
         }

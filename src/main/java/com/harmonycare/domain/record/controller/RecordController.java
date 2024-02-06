@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import java.util.List;
 
 import static com.harmonycare.global.util.ApiUtil.success;
 
@@ -32,8 +33,8 @@ public class RecordController {
     /**
      * Record 추가
      *
-     * @param requestBody 레코드 추가 DTO
-     * @return 추가한 레코드의 PK값 리턴
+     * @param requestBody Record 추가 DTO
+     * @return 추가한 Record의 PK값 리턴
      */
     @PostMapping
     @PreAuthorize("isAuthenticated()")
@@ -65,9 +66,9 @@ public class RecordController {
     /**
      * Record 수정
      *
-     * @param requestBody 레코드 수정 DTO
-     * @param id 수정할 레코드의 PK 값
-     * @return 수정된 레코드의 PK 값
+     * @param requestBody Record 수정 DTO
+     * @param id          수정할 Record의 PK 값
+     * @return 수정된 Record의 PK 값
      */
     @PutMapping("/{recordId}")
     @PreAuthorize("isAuthenticated()")
@@ -83,7 +84,7 @@ public class RecordController {
     /**
      * Record 삭제
      *
-     * @param id 삭제할 레코드의 PK 값
+     * @param id 삭제할 Record의 PK 값
      */
     @DeleteMapping("/{recordId}")
     public ResponseEntity<ApiUtil.ApiSuccessResult<?>> delete(
@@ -94,4 +95,18 @@ public class RecordController {
         return ResponseEntity.ok().body(success(HttpStatus.OK));
     }
 
+    /**
+     * 모든 Record 조회
+     *
+     * @return 자신의 모든 Record 조회
+     */
+    @GetMapping("/me")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<ApiUtil.ApiSuccessResult<List<RecordReadResponse>>> readMe(
+            @AuthenticationPrincipal PrincipalDetails principalDetails
+    ) {
+        List<RecordReadResponse> recordReadResponses = recordService.readMyRecord(principalDetails.member());
+
+        return ResponseEntity.ok().body(success(HttpStatus.OK, recordReadResponses));
+    }
 }

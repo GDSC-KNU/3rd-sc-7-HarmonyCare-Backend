@@ -40,8 +40,8 @@ public class Checklist {
     @Column(name = "title")
     private String title;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    @JoinColumn(name = "checklist_id")
+    @OneToMany(mappedBy = "checklist", cascade = CascadeType.ALL,
+            orphanRemoval = true, fetch = FetchType.EAGER)
     private List<DayEntity> dayList = new ArrayList<>();
 
     @Column(name = "check_time")

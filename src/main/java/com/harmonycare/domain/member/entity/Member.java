@@ -48,9 +48,6 @@ public class Member {
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Checklist> checklistList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Record> recordList = new ArrayList<>();
-
     @Builder
     public Member(String email, String password, Role role) {
         this.email = email;

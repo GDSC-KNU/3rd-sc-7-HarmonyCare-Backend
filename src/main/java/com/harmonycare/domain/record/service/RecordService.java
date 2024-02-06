@@ -1,5 +1,8 @@
 package com.harmonycare.domain.record.service;
 
+import com.harmonycare.domain.baby.dto.response.BabyReadResponse;
+import com.harmonycare.domain.baby.entity.Baby;
+import com.harmonycare.domain.baby.repository.BabyRepository;
 import com.harmonycare.domain.member.entity.Member;
 import com.harmonycare.domain.record.dto.request.RecordSaveRequest;
 import com.harmonycare.domain.record.dto.request.RecordUpdateRequest;
@@ -14,7 +17,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +27,7 @@ import java.time.format.DateTimeFormatter;
 public class RecordService {
 
     private final RecordRepository recordRepository;
+    private final BabyRepository babyRepository;
 
     /**
      * CREATE
@@ -34,7 +40,7 @@ public class RecordService {
                 .recordTask(request.recordTask())
                 .recordTime(resultDateTime)
                 .description(request.description())
-                .member(member)
+                .baby(babyRepository.findAllByMember(member).get(0))
                 .build();
 
         recordRepository.save(newRecord);
@@ -80,5 +86,21 @@ public class RecordService {
                 .orElseThrow(() -> new GlobalException(RecordErrorCode.RECORD_NOT_FOUND));
 
         recordRepository.delete(deleteRecord);
+    }
+
+
+    public List<RecordReadResponse> readMyRecord(Member member) {
+        List<Baby> babyList = babyRepository.findAllByMember(member);
+        Baby myBaby = babyList.get(0);
+
+        List<Record> recordList = myBaby.getRecordList();
+
+        return recordList.stream()
+                .map(record -> RecordReadResponse.builder()
+                        .recordTask(record.getRecordTask())
+                        .recordTime(String.valueOf(record.getRecordTime()))
+                        .description(record.getDescription())
+                        .build())
+                .collect(Collectors.toList());
     }
 }

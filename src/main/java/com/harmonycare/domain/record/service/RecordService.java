@@ -1,17 +1,25 @@
 package com.harmonycare.domain.record.service;
 
+import com.harmonycare.domain.baby.dto.response.BabyReadResponse;
+import com.harmonycare.domain.baby.entity.Baby;
+import com.harmonycare.domain.baby.repository.BabyRepository;
+import com.harmonycare.domain.member.entity.Member;
 import com.harmonycare.domain.record.dto.request.RecordSaveRequest;
+import com.harmonycare.domain.record.dto.request.RecordUpdateRequest;
 import com.harmonycare.domain.record.dto.response.RecordReadResponse;
 import com.harmonycare.domain.record.entity.Record;
 import com.harmonycare.domain.record.exception.RecordErrorCode;
 import com.harmonycare.domain.record.repositiry.RecordRepository;
 import com.harmonycare.global.exception.GlobalException;
+import com.harmonycare.global.util.DateTimeUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -19,18 +27,20 @@ import java.time.format.DateTimeFormatter;
 public class RecordService {
 
     private final RecordRepository recordRepository;
+    private final BabyRepository babyRepository;
 
     /**
      * CREATE
      */
     @Transactional
-    public Long saveRecord(RecordSaveRequest request) {
-        LocalDateTime recordDateTime = createLocalDateTime(request);
+    public Long saveRecord(RecordSaveRequest request, Member member) {
+        LocalDateTime resultDateTime = DateTimeUtil.stringToLocalDateTime(request.recordTime());
 
         Record newRecord = Record.builder()
                 .recordTask(request.recordTask())
-                .recordTime(recordDateTime)
-                .amount(request.amount())
+                .recordTime(resultDateTime)
+                .description(request.description())
+                .baby(babyRepository.findAllByMember(member).get(0))
                 .build();
 
         recordRepository.save(newRecord);
@@ -42,12 +52,12 @@ public class RecordService {
      */
     public RecordReadResponse readRecord(Long id) {
         Record findRecord = recordRepository.findById(id)
-                .orElseThrow(() -> new GlobalException(RecordErrorCode.CHECKLIST_NOT_FOUND));
+                .orElseThrow(() -> new GlobalException(RecordErrorCode.RECORD_NOT_FOUND));
 
         return RecordReadResponse.builder()
                 .recordTime(String.valueOf(findRecord.getRecordTime()))
                 .recordTask(findRecord.getRecordTask())
-                .amount(findRecord.getAmount())
+                .description(findRecord.getDescription())
                 .build();
     }
 
@@ -55,18 +65,13 @@ public class RecordService {
      * UPDATE
      */
     @Transactional
-    public Long updateRecord(RecordSaveRequest request, Long oldRecordId) {
-        LocalDateTime updateRecordTime = createLocalDateTime(request);
+    public Long updateRecord(RecordUpdateRequest request, Long oldRecordId) {
+        LocalDateTime resultDateTime = DateTimeUtil.stringToLocalDateTime(request.recordTime());
 
-        Record oldRecord = recordRepository.findById(oldRecordId)
-                .orElseThrow(() -> new GlobalException(RecordErrorCode.CHECKLIST_NOT_FOUND));
+        Record newRecord = recordRepository.findById(oldRecordId)
+                .orElseThrow(() -> new GlobalException(RecordErrorCode.RECORD_NOT_FOUND));
 
-        Record newRecord = Record.builder()
-                .id(oldRecord.getId())
-                .recordTask(request.recordTask())
-                .recordTime(updateRecordTime)
-                .amount(request.amount())
-                .build();
+        newRecord.update(request);
 
         recordRepository.save(newRecord);
         return newRecord.getId();
@@ -78,29 +83,24 @@ public class RecordService {
     @Transactional
     public void deleteRecord(Long deleteRecordId) {
         Record deleteRecord = recordRepository.findById(deleteRecordId)
-                .orElseThrow(() -> new GlobalException(RecordErrorCode.CHECKLIST_NOT_FOUND));
+                .orElseThrow(() -> new GlobalException(RecordErrorCode.RECORD_NOT_FOUND));
 
         recordRepository.delete(deleteRecord);
     }
 
-    /**
-     * 사용자가 설정한 체크리스트 시간에 따라 LocalDateTime을 생성하는 로직
-     */
-    private LocalDateTime createLocalDateTime(RecordSaveRequest recordSaveRequest) {
 
-        // 사용자가 보낸 문자열
-        String userDateString = recordSaveRequest.recordTime();
+    public List<RecordReadResponse> readMyRecord(Member member) {
+        List<Baby> babyList = babyRepository.findAllByMember(member);
+        Baby myBaby = babyList.get(0);
 
-        // 사용자가 보낸 문자열을 LocalDateTime으로 파싱
-        LocalDateTime userDateTime = parseStringToDateTime(userDateString);
+        List<Record> recordList = myBaby.getRecordList();
 
-        return userDateTime;
+        return recordList.stream()
+                .map(record -> RecordReadResponse.builder()
+                        .recordTask(record.getRecordTask())
+                        .recordTime(String.valueOf(record.getRecordTime()))
+                        .description(record.getDescription())
+                        .build())
+                .collect(Collectors.toList());
     }
-
-    // 문자열을 LocalDateTime으로 파싱하는 메서드
-    private static LocalDateTime parseStringToDateTime(String dateString) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        return LocalDateTime.parse(dateString, formatter);
-    }
-
 }

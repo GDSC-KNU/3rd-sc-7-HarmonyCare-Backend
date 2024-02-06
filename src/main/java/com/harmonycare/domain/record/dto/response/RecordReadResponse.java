@@ -4,5 +4,5 @@ import com.harmonycare.domain.record.entity.RecordTask;
 import lombok.Builder;
 
 @Builder
-public record RecordReadResponse(RecordTask recordTask, String recordTime, int amount) {
+public record RecordReadResponse(RecordTask recordTask, String recordTime, String description) {
 }

@@ -7,6 +7,7 @@ import com.harmonycare.domain.record.service.RecordService;
 import com.harmonycare.global.security.details.PrincipalDetails;
 import com.harmonycare.global.util.ApiUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -18,7 +19,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.time.LocalDate;
 import java.util.List;
 
 import static com.harmonycare.global.util.ApiUtil.success;
@@ -109,4 +113,26 @@ public class RecordController {
 
         return ResponseEntity.ok().body(success(HttpStatus.OK, recordReadResponses));
     }
+
+    /**
+     *  기간 내의 모든 기록 읽어오기
+     *
+     * @param principalDetails
+     * @param today 시작할 날짜
+     * @param duration 읽어오고 싶은 기간
+     * @return 기간 내의 모든 기록
+     */
+    @GetMapping()
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<ApiUtil.ApiSuccessResult<List<RecordReadResponse>>> readDuration(
+            @AuthenticationPrincipal PrincipalDetails principalDetails,
+            @RequestParam("date") @DateTimeFormat(pattern = "yyyy-mm-dd") LocalDate today,
+            @RequestParam("duration") Long duration
+    ) {
+        List<RecordReadResponse> recordReadResponses =
+                recordService.readDurationRecord(principalDetails.member(), today, duration);
+
+        return ResponseEntity.ok().body(success(HttpStatus.OK, recordReadResponses));
+    }
+
 }

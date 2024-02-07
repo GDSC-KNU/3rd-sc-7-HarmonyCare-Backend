@@ -44,18 +44,21 @@ public class Record {
     @Column(name = "record_time")
     private LocalDateTime recordTime;
 
+    @Column(name = "minute")
+    private Long minute;
+
     @Column(name = "description")
     private String description;
 
     @Builder
-    public Record(Long id, Baby baby, RecordTask recordTask, LocalDateTime recordTime, String description) {
+    public Record(Long id, Baby baby, RecordTask recordTask, LocalDateTime recordTime, Long minute, String description) {
         this.id = id;
         this.baby = baby;
         this.recordTask = recordTask;
         this.recordTime = recordTime;
+        this.minute = minute;
         this.description = description;
     }
-
 
     public void update(RecordUpdateRequest request) {
 
@@ -65,6 +68,10 @@ public class Record {
 
         if (request.recordTime() != null) {
             this.recordTime = DateTimeUtil.stringToLocalDateTime(request.recordTime());
+        }
+
+        if (request.minute() != null) {
+            this.minute = request.minute();
         }
 
         if (request.description() != null) {

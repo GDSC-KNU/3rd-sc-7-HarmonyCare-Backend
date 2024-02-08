@@ -1,6 +1,5 @@
 package com.harmonycare.domain.record.service;
 
-import com.harmonycare.domain.baby.dto.response.BabyReadResponse;
 import com.harmonycare.domain.baby.entity.Baby;
 import com.harmonycare.domain.baby.repository.BabyRepository;
 import com.harmonycare.domain.member.entity.Member;
@@ -11,15 +10,16 @@ import com.harmonycare.domain.record.entity.Record;
 import com.harmonycare.domain.record.exception.RecordErrorCode;
 import com.harmonycare.domain.record.repositiry.RecordRepository;
 import com.harmonycare.global.exception.GlobalException;
-import com.harmonycare.global.util.DateTimeUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
 
 @Service
 @RequiredArgsConstructor
@@ -34,11 +34,12 @@ public class RecordService {
      */
     @Transactional
     public Long saveRecord(RecordSaveRequest request, Member member) {
-        LocalDateTime resultDateTime = DateTimeUtil.stringToLocalDateTime(request.recordTime());
+        LocalDateTime resultDateTime = LocalDateTime.parse(request.recordTime());
 
         Record newRecord = Record.builder()
                 .recordTask(request.recordTask())
                 .recordTime(resultDateTime)
+                .minute(0L)
                 .description(request.description())
                 .baby(babyRepository.findAllByMember(member).get(0))
                 .build();
@@ -57,6 +58,7 @@ public class RecordService {
         return RecordReadResponse.builder()
                 .recordTime(String.valueOf(findRecord.getRecordTime()))
                 .recordTask(findRecord.getRecordTask())
+                .minute(findRecord.getMinute())
                 .description(findRecord.getDescription())
                 .build();
     }
@@ -66,7 +68,7 @@ public class RecordService {
      */
     @Transactional
     public Long updateRecord(RecordUpdateRequest request, Long oldRecordId) {
-        LocalDateTime resultDateTime = DateTimeUtil.stringToLocalDateTime(request.recordTime());
+        LocalDateTime resultDateTime = LocalDateTime.parse(request.recordTime());
 
         Record newRecord = recordRepository.findById(oldRecordId)
                 .orElseThrow(() -> new GlobalException(RecordErrorCode.RECORD_NOT_FOUND));
@@ -88,7 +90,12 @@ public class RecordService {
         recordRepository.delete(deleteRecord);
     }
 
-
+    /**
+     * 내 아기의 모든 기록을 가져오기
+     *
+     * @param member
+     * @return 내 아기의 모든 기록
+     */
     public List<RecordReadResponse> readMyRecord(Member member) {
         List<Baby> babyList = babyRepository.findAllByMember(member);
         Baby myBaby = babyList.get(0);
@@ -99,8 +106,34 @@ public class RecordService {
                 .map(record -> RecordReadResponse.builder()
                         .recordTask(record.getRecordTask())
                         .recordTime(String.valueOf(record.getRecordTime()))
+                        .minute(record.getMinute())
                         .description(record.getDescription())
                         .build())
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * 기간내의 모든 기록 읽어오기
+     *
+     * @param member
+     * @param today 읽어오고 싶은 날짜
+     * @param duration 해당 날짜로부터 며칠 읽어올건지?
+     * @return 기간내의 모든 기록
+     */
+    public List<RecordReadResponse> readDurationRecord(Member member, LocalDate today, Long duration) {
+
+        List<RecordReadResponse> responses = readMyRecord(member);
+        List<RecordReadResponse> result = new ArrayList<>();
+
+        for (int i = 0; i < duration; i++) {
+            LocalDate currentDate = today.plusDays(i);
+
+            for (RecordReadResponse recordReadResponse : responses) {
+                if (recordReadResponse.isSameToday(currentDate, recordReadResponse)) {
+                    result.add(recordReadResponse);
+                }
+            }
+        }
+        return result;
     }
 }

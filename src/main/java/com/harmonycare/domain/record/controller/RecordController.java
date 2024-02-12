@@ -129,7 +129,7 @@ public class RecordController {
             @RequestParam("duration") Long duration
     ) {
         List<RecordReadResponse> recordReadResponses =
-                recordService.readDurationRecord(principalDetails.member(), today, duration);
+                recordService.readRecordUsingRange(principalDetails.member(), today, duration);
 
         return ResponseEntity.ok().body(success(HttpStatus.OK, recordReadResponses));
     }

@@ -10,6 +10,7 @@ import com.harmonycare.domain.record.entity.Record;
 import com.harmonycare.domain.record.exception.RecordErrorCode;
 import com.harmonycare.domain.record.repositiry.RecordRepository;
 import com.harmonycare.global.exception.GlobalException;
+import com.harmonycare.global.util.DateTimeUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,7 +35,7 @@ public class RecordService {
      */
     @Transactional
     public Long saveRecord(RecordSaveRequest request, Member member) {
-        LocalDateTime resultDateTime = LocalDateTime.parse(request.recordTime());
+        LocalDateTime resultDateTime = DateTimeUtil.stringToLocalDateTime(request.recordTime());
 
         Record newRecord = Record.builder()
                 .recordTask(request.recordTask())
@@ -68,8 +69,6 @@ public class RecordService {
      */
     @Transactional
     public Long updateRecord(RecordUpdateRequest request, Long oldRecordId) {
-        LocalDateTime resultDateTime = LocalDateTime.parse(request.recordTime());
-
         Record newRecord = recordRepository.findById(oldRecordId)
                 .orElseThrow(() -> new GlobalException(RecordErrorCode.RECORD_NOT_FOUND));
 
@@ -91,49 +90,45 @@ public class RecordService {
     }
 
     /**
-     * 내 아기의 모든 기록을 가져오기
+     * 내 아기의 모든 기록을 읽기
      *
-     * @param member
      * @return 내 아기의 모든 기록
      */
     public List<RecordReadResponse> readMyRecord(Member member) {
-        List<Baby> babyList = babyRepository.findAllByMember(member);
-        Baby myBaby = babyList.get(0);
-
-        List<Record> recordList = myBaby.getRecordList();
+        List<Record> recordList = getMyRecordInFirstBaby(member);
 
         return recordList.stream()
-                .map(record -> RecordReadResponse.builder()
-                        .recordTask(record.getRecordTask())
-                        .recordTime(String.valueOf(record.getRecordTime()))
-                        .minute(record.getMinute())
-                        .description(record.getDescription())
-                        .build())
+                .map(RecordReadResponse::from)
                 .collect(Collectors.toList());
     }
 
     /**
-     * 기간내의 모든 기록 읽어오기
+     * 기간 내 모든 기록 읽기
      *
-     * @param member
-     * @param today 읽어오고 싶은 날짜
-     * @param duration 해당 날짜로부터 며칠 읽어올건지?
-     * @return 기간내의 모든 기록
+     * @param day 기준 날짜
+     * @param range {@param day}로부터 읽어올 날짜 범위 (단위: 일)
+     * @return 기간 내의 모든 기록
      */
-    public List<RecordReadResponse> readDurationRecord(Member member, LocalDate today, Long duration) {
+    public List<RecordReadResponse> readRecordUsingRange(Member member, LocalDate day, Long range) {
+        List<Record> recordList = getMyRecordInFirstBaby(member);
 
-        List<RecordReadResponse> responses = readMyRecord(member);
-        List<RecordReadResponse> result = new ArrayList<>();
+        LocalDateTime startTime = day.atStartOfDay();
+        LocalDateTime endTime = day.plusDays(range).atStartOfDay();
 
-        for (int i = 0; i < duration; i++) {
-            LocalDate currentDate = today.plusDays(i);
+        return recordList.stream()
+                .filter(record -> isWithinRange(record.getRecordTime(), startTime, endTime))
+                .map(RecordReadResponse::from)
+                .collect(Collectors.toList());
+    }
 
-            for (RecordReadResponse recordReadResponse : responses) {
-                if (RecordReadResponse.isSameToday(currentDate, recordReadResponse)) {
-                    result.add(recordReadResponse);
-                }
-            }
-        }
-        return result;
+    private boolean isWithinRange(LocalDateTime dateTime, LocalDateTime startTime, LocalDateTime endTime) {
+        return !dateTime.isBefore(startTime) && dateTime.isBefore(endTime);
+    }
+
+    private List<Record> getMyRecordInFirstBaby(Member member) {
+        List<Baby> babyList = babyRepository.findAllByMember(member);
+        Baby myBaby = babyList.get(0);
+
+        return myBaby.getRecordList();
     }
 }

@@ -71,7 +71,7 @@ public class RecordController {
      * Record 수정
      *
      * @param requestBody Record 수정 DTO
-     * @param id          수정할 Record의 PK 값
+     * @param id 수정할 Record의 PK 값
      * @return 수정된 Record의 PK 값
      */
     @PutMapping("/{recordId}")
@@ -117,7 +117,6 @@ public class RecordController {
     /**
      *  기간 내의 모든 기록 읽어오기
      *
-     * @param principalDetails
      * @param today 시작할 날짜
      * @param duration 읽어오고 싶은 기간
      * @return 기간 내의 모든 기록

@@ -21,16 +21,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/checklist")
 @RequiredArgsConstructor
 public class ChecklistController {
-    // TODO: 2/1/24 체크리스트 체크 기능 추가, 자신의 체크리스트 가져오기 추가
-
     private final ChecklistService checkListService;
 
     /**
-     * 체크리스트 추가
+     * 자신의 체크리스트 추가
      *
      * @param requestBody 체크리스트 추가 DTO
      * @return 추가한 데이터 PK값
@@ -47,7 +47,7 @@ public class ChecklistController {
     }
 
     /**
-     * 아기 정보 조회
+     * 체크리스트 조회
      *
      * @param checklistId 체크리스트 정보 PK값
      * @return 체크리스트 정보
@@ -63,7 +63,37 @@ public class ChecklistController {
     }
 
     /**
-     * 아기 정보 수정
+     * 자신의 체크리스트 조회
+     *
+     * @return 자신의 체크리스트 정보
+     */
+    @GetMapping("/me")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<ApiSuccessResult<List<ChecklistReadResponse>>> readMyChecklist(
+            @AuthenticationPrincipal PrincipalDetails principalDetails
+    ) {
+        List<ChecklistReadResponse> response = checkListService.readMyChecklist(principalDetails.member());
+
+        return ResponseEntity.ok().body(ApiUtil.success(HttpStatus.OK, response));
+    }
+
+    /**
+     * 체크리스트 체크
+     *
+     * @return 자신의 체크리스트 정보
+     */
+    @GetMapping("/check/{checklistId}")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<ApiSuccessResult<Boolean>> checkChecklist(
+            @PathVariable("checklistId") Long checklistId
+    ) {
+        Boolean response = checkListService.checkChecklist(checklistId);
+
+        return ResponseEntity.ok().body(ApiUtil.success(HttpStatus.OK, response));
+    }
+
+    /**
+     * 체크리스트 수정
      *
      * @param requestBody 체크리스트 수정 DTO
      * @param checklistId 수정할 체크리스트 정보 PK값
@@ -81,7 +111,7 @@ public class ChecklistController {
     }
 
     /**
-     * 아기 정보 삭제
+     * 체크리스트 삭제
      *
      * @param checklistId 삭제할 체크리스트 정보 PK값
      */

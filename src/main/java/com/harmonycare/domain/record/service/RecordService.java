@@ -68,8 +68,6 @@ public class RecordService {
      */
     @Transactional
     public Long updateRecord(RecordUpdateRequest request, Long oldRecordId) {
-        LocalDateTime resultDateTime = LocalDateTime.parse(request.recordTime());
-
         Record newRecord = recordRepository.findById(oldRecordId)
                 .orElseThrow(() -> new GlobalException(RecordErrorCode.RECORD_NOT_FOUND));
 

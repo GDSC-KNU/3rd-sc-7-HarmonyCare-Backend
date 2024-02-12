@@ -67,7 +67,7 @@ public class Record {
         }
 
         if (request.recordTime() != null) {
-            this.recordTime = DateTimeUtil.stringToLocalDateTime(request.recordTime());
+            this.recordTime = LocalDateTime.parse(request.recordTime());
         }
 
         if (request.minute() != null) {

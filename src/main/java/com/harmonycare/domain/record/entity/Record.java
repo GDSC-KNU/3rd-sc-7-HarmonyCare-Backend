@@ -1,8 +1,6 @@
 package com.harmonycare.domain.record.entity;
 
 import com.harmonycare.domain.baby.entity.Baby;
-import com.harmonycare.domain.member.entity.Member;
-import com.harmonycare.domain.record.dto.request.RecordSaveRequest;
 import com.harmonycare.domain.record.dto.request.RecordUpdateRequest;
 import com.harmonycare.global.util.DateTimeUtil;
 import jakarta.persistence.Column;

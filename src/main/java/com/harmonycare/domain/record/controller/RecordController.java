@@ -6,6 +6,7 @@ import com.harmonycare.domain.record.dto.response.RecordReadResponse;
 import com.harmonycare.domain.record.service.RecordService;
 import com.harmonycare.global.security.details.PrincipalDetails;
 import com.harmonycare.global.util.ApiUtil;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -40,6 +41,7 @@ public class RecordController {
      * @param requestBody Record 추가 DTO
      * @return 추가한 Record의 PK값 리턴
      */
+    @Operation(summary = "기록 추가", description = "자신의 (아기의) 기록을 추가합니다.")
     @PostMapping
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ApiUtil.ApiSuccessResult<Long>> save(
@@ -52,11 +54,12 @@ public class RecordController {
     }
 
     /**
-     * Record 클릭
+     * Record 조회
      *
-     * @param id 클릭한 Record의 PK 값
+     * @param id 조회할 Record의 PK 값
      * @return Record 정보
      */
+    @Operation(summary = "특정 기록 조회 (사용X)")
     @GetMapping("/{recordId}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ApiUtil.ApiSuccessResult<RecordReadResponse>> read(
@@ -74,6 +77,7 @@ public class RecordController {
      * @param id 수정할 Record의 PK 값
      * @return 수정된 Record의 PK 값
      */
+    @Operation(summary = "특정 기록 수정", description = "특정 기록을 수정합니다.")
     @PutMapping("/{recordId}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ApiUtil.ApiSuccessResult<Long>> update(
@@ -90,6 +94,7 @@ public class RecordController {
      *
      * @param id 삭제할 Record의 PK 값
      */
+    @Operation(summary = "특정 기록 삭제", description = "특정 기록을 삭제합니다.")
     @DeleteMapping("/{recordId}")
     public ResponseEntity<ApiUtil.ApiSuccessResult<?>> delete(
             @PathVariable("recordId") Long id
@@ -104,6 +109,7 @@ public class RecordController {
      *
      * @return 자신의 모든 Record 조회
      */
+    @Operation(summary = "자신의 모든 기록 조회", description = "자신의 모든 기록을 조회합니다.")
     @GetMapping("/me")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ApiUtil.ApiSuccessResult<List<RecordReadResponse>>> readMe(
@@ -115,21 +121,22 @@ public class RecordController {
     }
 
     /**
-     *  기간 내의 모든 기록 읽어오기
+     * 기간 내 모든 기록 읽기
      *
-     * @param today 시작할 날짜
-     * @param duration 읽어오고 싶은 기간
+     * @param day 기준 날짜
+     * @param range {@param day}로부터 읽어올 날짜 범위 (단위: 일)
      * @return 기간 내의 모든 기록
      */
+    @Operation(summary = "기간 내의 모든 기록 조회", description = "기준 날짜로부터 범위(단위: 일) 내의 모든 (자신의 아기의) 기록을 조회합니다.")
     @GetMapping()
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ApiUtil.ApiSuccessResult<List<RecordReadResponse>>> readDuration(
             @AuthenticationPrincipal PrincipalDetails principalDetails,
-            @RequestParam("date") @DateTimeFormat(pattern = "yyyy-mm-dd") LocalDate today,
-            @RequestParam("duration") Long duration
+            @RequestParam("day") @DateTimeFormat(pattern = "yyyy-mm-dd") LocalDate day,
+            @RequestParam("range") Long range
     ) {
         List<RecordReadResponse> recordReadResponses =
-                recordService.readRecordUsingRange(principalDetails.member(), today, duration);
+                recordService.readRecordUsingRange(principalDetails.member(), day, range);
 
         return ResponseEntity.ok().body(success(HttpStatus.OK, recordReadResponses));
     }

@@ -7,6 +7,7 @@ import com.harmonycare.domain.checklist.service.ChecklistService;
 import com.harmonycare.global.security.details.PrincipalDetails;
 import com.harmonycare.global.util.ApiUtil;
 import com.harmonycare.global.util.ApiUtil.ApiSuccessResult;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,6 +36,7 @@ public class ChecklistController {
      * @param requestBody 체크리스트 추가 DTO
      * @return 추가한 데이터 PK값
      */
+    @Operation(summary = "자신의 체크리스트 추가", description = "자신의 체크리스트를 추가합니다.")
     @PostMapping
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ApiSuccessResult<Long>> save(
@@ -52,6 +54,7 @@ public class ChecklistController {
      * @param checklistId 체크리스트 정보 PK값
      * @return 체크리스트 정보
      */
+    @Operation(summary = "체크리스트 조회 (사용X)")
     @GetMapping("/{checklistId}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ApiSuccessResult<ChecklistReadResponse>> read(
@@ -67,6 +70,7 @@ public class ChecklistController {
      *
      * @return 자신의 체크리스트 정보
      */
+    @Operation(summary = "자신의 체크리스트 조회", description = "자신의 체크리스트를 조회합니다.")
     @GetMapping("/me")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ApiSuccessResult<List<ChecklistReadResponse>>> readMyChecklist(
@@ -82,7 +86,8 @@ public class ChecklistController {
      *
      * @return 자신의 체크리스트 정보
      */
-    @GetMapping("/check/{checklistId}")
+    @Operation(summary = "체크리스트 체크", description = "체크리스트 체크를 ON/OFF 합니다.")
+    @PutMapping("/check/{checklistId}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ApiSuccessResult<Boolean>> checkChecklist(
             @PathVariable("checklistId") Long checklistId
@@ -99,6 +104,7 @@ public class ChecklistController {
      * @param checklistId 수정할 체크리스트 정보 PK값
      * @return 수정한 데이터 PK값
      */
+    @Operation(summary = "체크리스트 수정", description = "체크리스트를 수정합니다.")
     @PutMapping("/{checklistId}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ApiSuccessResult<Long>> update(
@@ -115,6 +121,7 @@ public class ChecklistController {
      *
      * @param checklistId 삭제할 체크리스트 정보 PK값
      */
+    @Operation(summary = "체크리스트 삭제", description = "체크리스트를 삭제합니다.")
     @DeleteMapping("/{checklistId}")
     public ResponseEntity<ApiSuccessResult<?>> delete(
             @PathVariable("checklistId") Long checklistId

@@ -5,6 +5,7 @@ import com.harmonycare.domain.auth.dto.response.LoginResponse;
 import com.harmonycare.domain.auth.service.AuthService;
 import com.harmonycare.global.util.ApiUtil;
 import com.harmonycare.global.util.ApiUtil.ApiSuccessResult;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
     private final AuthService authService;
 
+    @Operation(summary = "구글 로그인", description = "구글 OAuth2.0 로그인을 진행합니다.")
     @PostMapping("/login")
     public ResponseEntity<ApiSuccessResult<LoginResponse>> login(@RequestBody @Valid LoginRequest requestBody) {
         LoginResponse response = authService.googleLogin(requestBody);

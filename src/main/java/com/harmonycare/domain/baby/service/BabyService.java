@@ -13,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,8 +24,6 @@ public class BabyService {
 
     @Transactional
     public Long createBaby(BabyCreateRequest requestBody, Member member) {
-        DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-
         Baby baby = Baby.builder()
                 .name(requestBody.name())
                 .gender(Gender.valueOf(requestBody.gender()))

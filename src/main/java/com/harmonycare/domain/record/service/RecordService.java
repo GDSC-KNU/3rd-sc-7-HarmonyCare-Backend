@@ -129,7 +129,7 @@ public class RecordService {
             LocalDate currentDate = today.plusDays(i);
 
             for (RecordReadResponse recordReadResponse : responses) {
-                if (recordReadResponse.isSameToday(currentDate, recordReadResponse)) {
+                if (RecordReadResponse.isSameToday(currentDate, recordReadResponse)) {
                     result.add(recordReadResponse);
                 }
             }

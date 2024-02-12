@@ -20,6 +20,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -52,15 +53,10 @@ public class ChecklistService {
      * READ
      */
     public ChecklistReadResponse readCheckList(Long checklistId) {
-        Checklist checkList = checkListRepository.findById(checklistId)
+        Checklist checklist = checkListRepository.findById(checklistId)
                 .orElseThrow(() -> new GlobalException(ChecklistErrorCode.CHECKLIST_NOT_FOUND));
 
-        return ChecklistReadResponse.builder()
-                .title(checkList.getTitle())
-                .days(Day.dayEntityListToDayList(checkList.getDayList()))
-                .checkTime(String.valueOf(checkList.getCheckTime()))
-                .isCheck(checkList.getIsCheck())
-                .build();
+        return ChecklistReadResponse.from(checklist);
     }
 
     /**
@@ -86,5 +82,22 @@ public class ChecklistService {
                 .orElseThrow(() -> new GlobalException(ChecklistErrorCode.CHECKLIST_NOT_FOUND));
 
         checkListRepository.delete(deleteChecklist);
+    }
+
+    public List<ChecklistReadResponse> readMyChecklist(Member member) {
+        List<Checklist> checklistList = checkListRepository.findByMember(member);
+
+        return checklistList.stream()
+                .map(ChecklistReadResponse::from)
+                .collect(Collectors.toList());
+    }
+
+    public Boolean checkChecklist(Long checklistId) {
+        Checklist checklist = checkListRepository.findById(checklistId)
+                .orElseThrow(() -> new GlobalException(ChecklistErrorCode.CHECKLIST_NOT_FOUND));
+
+        checklist.check();
+
+        return checklist.getIsCheck();
     }
 }

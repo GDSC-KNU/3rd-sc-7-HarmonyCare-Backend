@@ -25,7 +25,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class RecordService {
-
     private final RecordRepository recordRepository;
     private final BabyRepository babyRepository;
 
@@ -34,12 +33,13 @@ public class RecordService {
      */
     @Transactional
     public Long saveRecord(RecordSaveRequest request, Member member) {
-        LocalDateTime resultDateTime = DateTimeUtil.stringToLocalDateTime(request.recordTime());
+        LocalDateTime startDateTime = DateTimeUtil.stringToLocalDateTime(request.startTime());
+        LocalDateTime endDateTime = DateTimeUtil.stringToLocalDateTime(request.endTime());
 
         Record newRecord = Record.builder()
                 .recordTask(request.recordTask())
-                .recordTime(resultDateTime)
-                .minute(0L)
+                .startTime(startDateTime)
+                .endTime(endDateTime)
                 .description(request.description())
                 .baby(babyRepository.findAllByMember(member).get(0))
                 .build();
@@ -52,15 +52,10 @@ public class RecordService {
      * READ
      */
     public RecordReadResponse readRecord(Long id) {
-        Record findRecord = recordRepository.findById(id)
+        Record record = recordRepository.findById(id)
                 .orElseThrow(() -> new GlobalException(RecordErrorCode.RECORD_NOT_FOUND));
 
-        return RecordReadResponse.builder()
-                .recordTime(DateTimeUtil.localDateTimeToString(findRecord.getRecordTime()))
-                .recordTask(findRecord.getRecordTask())
-                .minute(findRecord.getMinute())
-                .description(findRecord.getDescription())
-                .build();
+        return RecordReadResponse.from(record);
     }
 
     /**
@@ -115,7 +110,7 @@ public class RecordService {
         LocalDateTime endTime = day.plusDays(range).atStartOfDay();
 
         return recordList.stream()
-                .filter(record -> isWithinRange(record.getRecordTime(), startTime, endTime))
+                .filter(record -> isWithinRange(record.getStartTime(), startTime, endTime))
                 .map(RecordReadResponse::from)
                 .collect(Collectors.toList());
     }

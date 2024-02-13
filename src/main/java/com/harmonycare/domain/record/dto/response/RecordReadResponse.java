@@ -9,17 +9,12 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Builder
-public record RecordReadResponse(RecordTask recordTask, String recordTime, Long minute, String description) {
-    public static boolean isSameToday(LocalDate today, RecordReadResponse recordReadResponse) {
-        return LocalDateTime.parse(recordReadResponse.recordTime())
-                .toLocalDate().isEqual(today);
-    }
-
+public record RecordReadResponse(RecordTask recordTask, String startTime, String endTime, String description) {
     public static RecordReadResponse from(Record record) {
         return RecordReadResponse.builder()
                 .recordTask(record.getRecordTask())
-                .recordTime(DateTimeUtil.localDateTimeToString(record.getRecordTime()))
-                .minute(record.getMinute())
+                .startTime(DateTimeUtil.localDateTimeToString(record.getStartTime()))
+                .endTime(DateTimeUtil.localDateTimeToString(record.getEndTime()))
                 .description(record.getDescription())
                 .build();
     }

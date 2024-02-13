@@ -40,36 +40,35 @@ public class Record {
     private RecordTask recordTask;
 
     @Column(name = "record_time")
-    private LocalDateTime recordTime;
+    private LocalDateTime startTime;
 
     @Column(name = "minute")
-    private Long minute;
+    private LocalDateTime endTime;
 
     @Column(name = "description")
     private String description;
 
     @Builder
-    public Record(Long id, Baby baby, RecordTask recordTask, LocalDateTime recordTime, Long minute, String description) {
+    public Record(Long id, Baby baby, RecordTask recordTask, LocalDateTime startTime, LocalDateTime endTime, String description) {
         this.id = id;
         this.baby = baby;
         this.recordTask = recordTask;
-        this.recordTime = recordTime;
-        this.minute = minute;
+        this.startTime = startTime;
+        this.endTime = endTime;
         this.description = description;
     }
 
     public void update(RecordUpdateRequest request) {
-
         if (request.recordTask() != null) {
             this.recordTask = request.recordTask();
         }
 
-        if (request.recordTime() != null) {
-            this.recordTime = DateTimeUtil.stringToLocalDateTime(request.recordTime());
+        if (request.startTime() != null) {
+            this.startTime = DateTimeUtil.stringToLocalDateTime(request.startTime());
         }
 
-        if (request.minute() != null) {
-            this.minute = request.minute();
+        if (request.endTime() != null) {
+            this.endTime = DateTimeUtil.stringToLocalDateTime(request.endTime());
         }
 
         if (request.description() != null) {

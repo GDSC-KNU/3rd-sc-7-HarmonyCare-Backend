@@ -1,23 +1,22 @@
 package com.harmonycare.domain.community.dto.response;
 
 import com.harmonycare.domain.baby.entity.Baby;
+import com.harmonycare.domain.community.entity.Community;
 import com.harmonycare.global.util.DateTimeUtil;
 import lombok.Builder;
 
 @Builder
 public record CommunityReadResponse(
-        String name,
-        String gender,
-        String birthDate,
-        Float birthWeight
+        Long communityId,
+        String title,
+        String content
 ) {
 
-    public static CommunityReadResponse from(Baby baby) {
+    public static CommunityReadResponse from(Community community) {
         return CommunityReadResponse.builder()
-                .name(baby.getName())
-                .gender(baby.getGender().name())
-                .birthDate(DateTimeUtil.localDateTimeToString(baby.getBirthdate()))
-                .birthWeight(baby.getBirthWeight())
+                .communityId(community.getId())
+                .title(community.getTitle())
+                .content(community.getContent())
                 .build();
     }
 }

@@ -1,23 +1,19 @@
 package com.harmonycare.domain.community.dto.response;
 
 import com.harmonycare.domain.baby.entity.Baby;
+import com.harmonycare.domain.community.entity.Comment;
 import com.harmonycare.global.util.DateTimeUtil;
 import lombok.Builder;
 
 @Builder
 public record CommentReadResponse(
-        String name,
-        String gender,
-        String birthDate,
-        Float birthWeight
+        Long commentId,
+        String content
 ) {
-
-    public static CommentReadResponse from(Baby baby) {
+    public static CommentReadResponse from(Comment comment) {
         return CommentReadResponse.builder()
-                .name(baby.getName())
-                .gender(baby.getGender().name())
-                .birthDate(DateTimeUtil.localDateTimeToString(baby.getBirthdate()))
-                .birthWeight(baby.getBirthWeight())
+                .commentId(comment.getId())
+                .content(comment.getContent())
                 .build();
     }
 }

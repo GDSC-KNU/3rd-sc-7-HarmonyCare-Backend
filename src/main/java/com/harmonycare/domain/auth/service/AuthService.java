@@ -25,6 +25,7 @@ import java.nio.charset.StandardCharsets;
 public class AuthService {
     private final Oauth2Service oauth2Service;
     private final BabyService babyService;
+    private final MemberService memberService;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -36,6 +37,10 @@ public class AuthService {
 
         UserResourceDto userResource = oauth2Service.getUserResource(accessToken);
         String email = userResource.email();
+
+        if (!memberService.existMemberByEmail(email))
+            memberService.saveMember(email);
+
         boolean hasBaby = babyService.existBabyByMemberEmail(email);
 
         UsernamePasswordAuthenticationToken authenticationToken =

@@ -3,6 +3,7 @@ package com.harmonycare.domain.auth.service;
 import com.harmonycare.domain.auth.dto.request.LoginRequest;
 import com.harmonycare.domain.auth.dto.response.LoginResponse;
 import com.harmonycare.domain.auth.dto.response.Token;
+import com.harmonycare.domain.baby.service.BabyService;
 import com.harmonycare.domain.member.service.MemberService;
 import com.harmonycare.global.security.provider.JwtTokenProvider;
 import com.harmonycare.global.util.OauthUtil;
@@ -23,7 +24,7 @@ import java.nio.charset.StandardCharsets;
 @Transactional(readOnly = true)
 public class AuthService {
     private final Oauth2Service oauth2Service;
-    private final MemberService memberService;
+    private final BabyService babyService;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -35,12 +36,7 @@ public class AuthService {
 
         UserResourceDto userResource = oauth2Service.getUserResource(accessToken);
         String email = userResource.email();
-        boolean isFirstLogin = false;
-
-        if (!memberService.existMemberByEmail(email)) {
-            memberService.saveMember(email);
-            isFirstLogin = true;
-        }
+        boolean hasBaby = babyService.existBabyByMemberEmail(email);
 
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(userResource.email(), OauthUtil.oauthPasswordKey);
@@ -51,7 +47,7 @@ public class AuthService {
         Token token = jwtTokenProvider.generateToken(authentication);
 
         return LoginResponse.builder()
-                .isFirstLogin(isFirstLogin)
+                .hasBaby(hasBaby)
                 .token(token)
                 .build();
     }

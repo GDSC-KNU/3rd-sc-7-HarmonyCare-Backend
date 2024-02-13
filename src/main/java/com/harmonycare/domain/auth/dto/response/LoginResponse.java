@@ -5,7 +5,7 @@ import lombok.Builder;
 
 @Builder
 public record LoginResponse(
-    @NotNull boolean isFirstLogin,
+    @NotNull boolean hasBaby,
     @NotNull Token token
 ) {
 }

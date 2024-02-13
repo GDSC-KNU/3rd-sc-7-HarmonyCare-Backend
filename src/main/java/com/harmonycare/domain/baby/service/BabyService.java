@@ -57,4 +57,8 @@ public class BabyService {
                 .map(BabyReadResponse::from)
                 .collect(Collectors.toList());
     }
+
+    public boolean existBabyByMemberEmail(String email) {
+        return babyRepository.existsByMember_Email(email);
+    }
 }

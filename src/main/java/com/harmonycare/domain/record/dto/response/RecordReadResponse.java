@@ -2,6 +2,7 @@ package com.harmonycare.domain.record.dto.response;
 
 import com.harmonycare.domain.record.entity.Record;
 import com.harmonycare.domain.record.entity.RecordTask;
+import com.harmonycare.global.util.DateTimeUtil;
 import lombok.Builder;
 
 import java.time.LocalDate;
@@ -17,7 +18,7 @@ public record RecordReadResponse(RecordTask recordTask, String recordTime, Long 
     public static RecordReadResponse from(Record record) {
         return RecordReadResponse.builder()
                 .recordTask(record.getRecordTask())
-                .recordTime(String.valueOf(record.getRecordTime()))
+                .recordTime(DateTimeUtil.localDateTimeToString(record.getRecordTime()))
                 .minute(record.getMinute())
                 .description(record.getDescription())
                 .build();

@@ -56,7 +56,7 @@ public class RecordService {
                 .orElseThrow(() -> new GlobalException(RecordErrorCode.RECORD_NOT_FOUND));
 
         return RecordReadResponse.builder()
-                .recordTime(String.valueOf(findRecord.getRecordTime()))
+                .recordTime(DateTimeUtil.localDateTimeToString(findRecord.getRecordTime()))
                 .recordTask(findRecord.getRecordTask())
                 .minute(findRecord.getMinute())
                 .description(findRecord.getDescription())

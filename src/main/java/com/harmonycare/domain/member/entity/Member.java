@@ -2,6 +2,8 @@ package com.harmonycare.domain.member.entity;
 
 import com.harmonycare.domain.baby.entity.Baby;
 import com.harmonycare.domain.checklist.entity.Checklist;
+import com.harmonycare.domain.community.entity.Community;
+import com.harmonycare.domain.record.entity.Record;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -46,6 +48,9 @@ public class Member {
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Checklist> checklistList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Community> communityList = new ArrayList<>();
 
     @Builder
     public Member(String email, String password, Role role) {

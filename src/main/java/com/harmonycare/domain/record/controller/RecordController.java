@@ -50,8 +50,6 @@ public class RecordController {
     ) {
         Long recordId = recordService.saveRecord(requestBody, principalDetails.member());
 
-        System.out.println("principalDetails.getUsername() = " + principalDetails.getUsername());
-
         return ResponseEntity.ok().body(success(HttpStatus.CREATED, recordId));
     }
 

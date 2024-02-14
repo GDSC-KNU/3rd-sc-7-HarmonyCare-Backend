@@ -1,9 +1,7 @@
 package com.harmonycare.domain.community.service;
 
 import com.harmonycare.domain.community.dto.request.CommentWriteRequest;
-import com.harmonycare.domain.community.dto.request.CommunityWriteRequest;
 import com.harmonycare.domain.community.dto.response.CommentReadResponse;
-import com.harmonycare.domain.community.dto.response.CommunityReadResponse;
 import com.harmonycare.domain.community.entity.Comment;
 import com.harmonycare.domain.community.entity.Community;
 import com.harmonycare.domain.community.exception.CommentErrorCode;

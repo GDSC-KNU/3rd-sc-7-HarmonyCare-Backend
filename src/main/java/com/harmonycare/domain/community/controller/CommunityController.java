@@ -1,6 +1,5 @@
 package com.harmonycare.domain.community.controller;
 
-import com.harmonycare.domain.baby.dto.request.BabyCreateRequest;
 import com.harmonycare.domain.community.dto.request.CommunityWriteRequest;
 import com.harmonycare.domain.community.dto.response.CommunityReadResponse;
 import com.harmonycare.domain.community.service.CommunityService;

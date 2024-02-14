@@ -1,8 +1,6 @@
 package com.harmonycare.domain.community.dto.response;
 
-import com.harmonycare.domain.baby.entity.Baby;
 import com.harmonycare.domain.community.entity.Comment;
-import com.harmonycare.global.util.DateTimeUtil;
 import lombok.Builder;
 
 @Builder

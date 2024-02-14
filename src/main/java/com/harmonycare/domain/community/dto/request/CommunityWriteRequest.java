@@ -1,6 +1,5 @@
 package com.harmonycare.domain.community.dto.request;
 
-import com.harmonycare.domain.community.entity.Comment;
 import com.harmonycare.domain.community.entity.Community;
 import com.harmonycare.domain.member.entity.Member;
 

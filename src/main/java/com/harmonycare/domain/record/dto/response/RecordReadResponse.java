@@ -5,9 +5,6 @@ import com.harmonycare.domain.record.entity.RecordTask;
 import com.harmonycare.global.util.DateTimeUtil;
 import lombok.Builder;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-
 @Builder
 public record RecordReadResponse(RecordTask recordTask, String startTime, String endTime, String description) {
     public static RecordReadResponse from(Record record) {

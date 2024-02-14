@@ -3,7 +3,6 @@ package com.harmonycare.domain.member.entity;
 import com.harmonycare.domain.baby.entity.Baby;
 import com.harmonycare.domain.checklist.entity.Checklist;
 import com.harmonycare.domain.community.entity.Community;
-import com.harmonycare.domain.record.entity.Record;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

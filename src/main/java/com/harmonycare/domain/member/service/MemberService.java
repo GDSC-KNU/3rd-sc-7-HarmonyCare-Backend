@@ -1,21 +1,30 @@
 package com.harmonycare.domain.member.service;
 
+import com.harmonycare.domain.baby.entity.Baby;
+import com.harmonycare.domain.baby.repository.BabyRepository;
+import com.harmonycare.domain.member.dto.response.ProfileReadResponse;
 import com.harmonycare.domain.member.entity.Member;
 import com.harmonycare.domain.member.entity.Role;
 import com.harmonycare.domain.member.exception.MemberErrorCode;
 import com.harmonycare.domain.member.repository.MemberRepository;
 import com.harmonycare.global.exception.GlobalException;
+import com.harmonycare.global.util.DateTimeUtil;
 import com.harmonycare.global.util.OauthUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class MemberService {
     private final MemberRepository memberRepository;
+    private final BabyRepository babyRepository;
     private final PasswordEncoder passwordEncoder;
 
     public Member findMemberByEmail(String email) {
@@ -34,5 +43,17 @@ public class MemberService {
                 .password(passwordEncoder.encode(OauthUtil.oauthPasswordKey))
                 .role(Role.ROLE_USER)
                 .build());
+    }
+
+    public ProfileReadResponse readProfile(Member member) {
+        List<Baby> babyList = babyRepository.findAllByMember(member);
+
+        return ProfileReadResponse.builder()
+                // .parentName(member.getMemberName())
+                .parentName("이아무개")
+                .email(member.getEmail())
+                .babyNames(ProfileReadResponse.getBabyNames(babyList))
+                .babyBirthDates(ProfileReadResponse.getBabyBirthDates(babyList))
+                .build();
     }
 }

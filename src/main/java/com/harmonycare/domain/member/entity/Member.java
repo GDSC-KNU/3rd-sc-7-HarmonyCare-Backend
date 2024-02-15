@@ -42,6 +42,9 @@ public class Member {
     @Column(name = "role")
     private Role role;
 
+    @Column(name = "name")
+    private String name;
+
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Baby> babyList = new ArrayList<>();
 
@@ -52,9 +55,10 @@ public class Member {
     private List<Community> communityList = new ArrayList<>();
 
     @Builder
-    public Member(String email, String password, Role role) {
+    public Member(String email, String password, Role role, String name) {
         this.email = email;
         this.password = password;
         this.role = role;
+        this.name = name;
     }
 }

@@ -10,6 +10,7 @@ import com.harmonycare.global.util.OauthUtil;
 import com.harmonycare.google.dto.UserResourceDto;
 import com.harmonycare.google.service.Oauth2Service;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
@@ -20,6 +21,7 @@ import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class AuthService {
@@ -37,9 +39,10 @@ public class AuthService {
 
         UserResourceDto userResource = oauth2Service.getUserResource(accessToken);
         String email = userResource.email();
+        String name = userResource.name();
 
         if (!memberService.existMemberByEmail(email))
-            memberService.saveMember(email);
+            memberService.saveMember(email, name);
 
         boolean hasBaby = babyService.existBabyByMemberEmail(email);
 

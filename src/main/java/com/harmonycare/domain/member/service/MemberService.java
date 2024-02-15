@@ -37,23 +37,19 @@ public class MemberService {
     }
 
     @Transactional
-    public void saveMember(String email) {
+    public void saveMember(String email, String name) {
         memberRepository.save(Member.builder()
                 .email(email)
                 .password(passwordEncoder.encode(OauthUtil.oauthPasswordKey))
                 .role(Role.ROLE_USER)
+                .name(name)
                 .build());
     }
 
     public ProfileReadResponse readProfile(Member member) {
         List<Baby> babyList = babyRepository.findAllByMember(member);
+        Baby baby = babyList.get(0);
 
-        return ProfileReadResponse.builder()
-                // .parentName(member.getMemberName())
-                .parentName("이아무개")
-                .email(member.getEmail())
-                .babyNames(ProfileReadResponse.getBabyNames(babyList))
-                .babyBirthDates(ProfileReadResponse.getBabyBirthDates(babyList))
-                .build();
+        return ProfileReadResponse.from(member, baby);
     }
 }

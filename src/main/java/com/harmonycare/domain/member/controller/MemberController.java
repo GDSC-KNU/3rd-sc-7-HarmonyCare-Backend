@@ -31,13 +31,12 @@ public class MemberController {
      * @param principalDetails member 정보
      * @return profile 데이터 리턴
      */
-    @GetMapping("/profile")
+    @GetMapping("/profiles")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ApiUtil.ApiSuccessResult<ProfileReadResponse>> readProfile(
             @AuthenticationPrincipal PrincipalDetails principalDetails
     ){
-        Member findMember = memberService.findMemberByEmail(principalDetails.member().getEmail());
-        ProfileReadResponse profileReadResponse = memberService.readProfile(findMember);
+        ProfileReadResponse profileReadResponse = memberService.readProfile(principalDetails.member());
 
         return ResponseEntity.ok().body(success(HttpStatus.OK, profileReadResponse));
     }

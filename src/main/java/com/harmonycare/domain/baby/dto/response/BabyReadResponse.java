@@ -6,6 +6,7 @@ import lombok.Builder;
 
 @Builder
 public record BabyReadResponse(
+        Long babyId,
         String name,
         String gender,
         String birthDate,
@@ -14,6 +15,7 @@ public record BabyReadResponse(
 
     public static BabyReadResponse from(Baby baby) {
         return BabyReadResponse.builder()
+                .babyId(baby.getId())
                 .name(baby.getName())
                 .gender(baby.getGender().name())
                 .birthDate(DateTimeUtil.localDateTimeToString(baby.getBirthdate()))

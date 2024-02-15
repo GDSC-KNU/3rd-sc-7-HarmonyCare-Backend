@@ -1,8 +1,6 @@
 package com.harmonycare.domain.member.controller;
 
 import com.harmonycare.domain.member.dto.response.ProfileReadResponse;
-import com.harmonycare.domain.member.entity.Member;
-import com.harmonycare.domain.member.repository.MemberRepository;
 import com.harmonycare.domain.member.service.MemberService;
 import com.harmonycare.global.security.details.PrincipalDetails;
 import com.harmonycare.global.util.ApiUtil;
@@ -14,7 +12,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 
 import static com.harmonycare.global.util.ApiUtil.success;
 

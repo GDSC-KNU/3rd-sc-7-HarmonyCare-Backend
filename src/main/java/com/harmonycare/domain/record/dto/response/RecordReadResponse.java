@@ -6,9 +6,10 @@ import com.harmonycare.global.util.DateTimeUtil;
 import lombok.Builder;
 
 @Builder
-public record RecordReadResponse(RecordTask recordTask, String startTime, String endTime, String description) {
+public record RecordReadResponse(Long recordId, RecordTask recordTask, String startTime, String endTime, String description) {
     public static RecordReadResponse from(Record record) {
         return RecordReadResponse.builder()
+                .recordId(record.getId())
                 .recordTask(record.getRecordTask())
                 .startTime(DateTimeUtil.localDateTimeToString(record.getStartTime()))
                 .endTime(DateTimeUtil.localDateTimeToString(record.getEndTime()))

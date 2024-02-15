@@ -8,16 +8,13 @@ import com.harmonycare.domain.member.entity.Role;
 import com.harmonycare.domain.member.exception.MemberErrorCode;
 import com.harmonycare.domain.member.repository.MemberRepository;
 import com.harmonycare.global.exception.GlobalException;
-import com.harmonycare.global.util.DateTimeUtil;
 import com.harmonycare.global.util.OauthUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor

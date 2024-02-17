@@ -8,6 +8,7 @@ import com.harmonycare.domain.checklist.entity.Day;
 import com.harmonycare.domain.checklist.entity.DayEntity;
 import com.harmonycare.domain.checklist.exception.ChecklistErrorCode;
 import com.harmonycare.domain.checklist.repository.ChecklistRepository;
+import com.harmonycare.domain.checklist.repository.DayEntityRepository;
 import com.harmonycare.domain.member.entity.Member;
 import com.harmonycare.global.exception.GlobalException;
 import com.harmonycare.global.util.DateTimeUtil;
@@ -23,7 +24,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class ChecklistService {
-
+    private final DayEntityRepository dayEntityRepository;
     private final ChecklistRepository checkListRepository;
 
     /**
@@ -32,18 +33,19 @@ public class ChecklistService {
     @Transactional
     public Long saveCheckList(ChecklistSaveRequest requestBody, Member member) {
         LocalDateTime resultDateTime = DateTimeUtil.stringToLocalDateTime(requestBody.checkTime());
-        List<DayEntity> dayEntityList = Day.dayListToDayEntityList(requestBody.days());
 
-        Checklist checkList = Checklist.builder()
+        Checklist checklist = checkListRepository.save(Checklist.builder()
                 .title(requestBody.title())
-                .dayList(dayEntityList)
                 .checkTime(resultDateTime)
                 .isCheck(false)
                 .member(member)
-                .build();
+                .build());
 
-        checkListRepository.save(checkList);
-        return checkList.getId();
+
+        List<DayEntity> dayEntityList = Day.dayListToDayEntityList(requestBody.days(), checklist);
+        dayEntityRepository.saveAll(dayEntityList);
+
+        return checklist.getId();
     }
 
     /**
@@ -89,11 +91,13 @@ public class ChecklistService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public Boolean checkChecklist(Long checklistId) {
         Checklist checklist = checkListRepository.findById(checklistId)
                 .orElseThrow(() -> new GlobalException(ChecklistErrorCode.CHECKLIST_NOT_FOUND));
 
         checklist.check();
+        checkListRepository.save(checklist);
 
         return checklist.getIsCheck();
     }

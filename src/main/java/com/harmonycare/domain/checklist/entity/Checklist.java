@@ -72,6 +72,7 @@ public class Checklist {
     }
 
     public void check() {
-        this.isCheck = !this.isCheck;
+        if (this.isCheck) this.isCheck = Boolean.FALSE;
+        else this.isCheck = Boolean.TRUE;
     }
 }

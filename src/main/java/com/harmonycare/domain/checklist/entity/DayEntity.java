@@ -30,13 +30,13 @@ public class DayEntity {
     @Column(name = "day")
     private Day day;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "checklist_id")
     private Checklist checklist;
 
     @Builder
-    public DayEntity(Long id, Day day) {
-        this.id = id;
+    public DayEntity(Day day, Checklist checklist) {
         this.day = day;
+        this.checklist = checklist;
     }
 }

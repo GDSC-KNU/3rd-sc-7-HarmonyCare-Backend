@@ -12,6 +12,12 @@ public enum Day {
                 .collect(Collectors.toList());
     }
 
+    public static List<DayEntity> dayListToDayEntityList(List<Day> dayList, Checklist checklist) {
+        return dayList.stream()
+                .map(day -> DayEntity.builder().day(day).checklist(checklist).build())
+                .collect(Collectors.toList());
+    }
+
 
     public static List<Day> dayEntityListToDayList(List<DayEntity> dayEntityList) {
         return dayEntityList.stream()

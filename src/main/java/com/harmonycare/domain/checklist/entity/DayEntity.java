@@ -39,4 +39,8 @@ public class DayEntity {
         this.day = day;
         this.checklist = checklist;
     }
+
+    public void setChecklist(Checklist checklist) {
+        this.checklist = checklist;
+    }
 }

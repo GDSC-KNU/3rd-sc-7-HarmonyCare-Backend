@@ -67,8 +67,8 @@ public class ChecklistService {
                 .orElseThrow(() -> new GlobalException(ChecklistErrorCode.CHECKLIST_NOT_FOUND));
 
         checklist.update(requestBody);
-
         checkListRepository.save(checklist);
+
         return checklist.getId();
     }
 

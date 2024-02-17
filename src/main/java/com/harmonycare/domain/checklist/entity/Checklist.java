@@ -63,8 +63,11 @@ public class Checklist {
         if (request.title() != null)
             this.title = request.title();
 
-        if (request.days() != null)
-            this.dayList = Day.dayListToDayEntityList(request.days());
+        if (request.days() != null) {
+            this.dayList.clear(); // 기존 목록을 지웁니다.
+            this.dayList.addAll(Day.dayListToDayEntityList(request.days()));
+            this.dayList.forEach(dayEntity -> dayEntity.setChecklist(this));
+        }
 
         if (request.checkTime() != null)
             this.checkTime = DateTimeUtil.stringToLocalDateTime(request.checkTime());

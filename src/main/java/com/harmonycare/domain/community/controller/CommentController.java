@@ -55,9 +55,10 @@ public class CommentController {
     @GetMapping("/{communityId}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ApiUtil.ApiSuccessResult<List<CommentReadResponse>>> readByCommunityId(
-            @PathVariable("communityId") Long communityId
+            @PathVariable("communityId") Long communityId,
+            @AuthenticationPrincipal PrincipalDetails principalDetails
     ) {
-        List<CommentReadResponse> response = commentService.readCommentByCommunityId(communityId);
+        List<CommentReadResponse> response = commentService.readCommentByCommunityId(communityId, principalDetails.member());
 
         return ResponseEntity.ok()
                 .body(ApiUtil.success(HttpStatus.OK, response));
@@ -73,9 +74,10 @@ public class CommentController {
     @DeleteMapping("/{commentId}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ApiUtil.ApiSuccessResult<?>> delete(
-            @PathVariable("commentId") Long commentId
+            @PathVariable("commentId") Long commentId,
+            @AuthenticationPrincipal PrincipalDetails principalDetails
     ) {
-        commentService.deleteComment(commentId);
+        commentService.deleteComment(commentId, principalDetails.member());
 
         return ResponseEntity.ok()
                 .body(ApiUtil.success(HttpStatus.OK));

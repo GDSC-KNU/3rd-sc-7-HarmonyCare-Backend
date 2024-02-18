@@ -23,7 +23,7 @@ public class Comment {
     @Column(name = "comment_id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY, targetEntity = Member.class)
+    @ManyToOne(fetch = FetchType.EAGER, targetEntity = Member.class)
     @JoinColumn(name = "member_id")
     private Member member;
 

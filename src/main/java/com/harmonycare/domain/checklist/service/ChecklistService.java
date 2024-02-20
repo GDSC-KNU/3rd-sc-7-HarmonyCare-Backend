@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -100,5 +101,29 @@ public class ChecklistService {
         checkListRepository.save(checklist);
 
         return checklist.getIsCheck();
+    }
+
+    @Transactional(readOnly = true)
+    public String provideTips(Member member) {
+        LocalDate yesterday = LocalDateTime.now().minusDays(1L).toLocalDate();
+        List<Checklist> yesterdayChecklists =
+                checkListRepository.findByMemberAndCheckTimeBetween(member, yesterday.atStartOfDay(),
+                        yesterday.atTime(23, 59, 59));
+
+        String result = yesterdayChecklists.stream()
+                .filter(checklist -> !checklist.getIsCheck())
+                .filter(checklist -> checklist.getTitle().equals("Sleep") || checklist.getTitle().equals("Exercise"))
+                .findFirst()
+                .map(checklist -> {
+                    if (checklist.getTitle().equals("Sleep")) {
+                        return "어젯밤에 잠이 부족했어요. 충분한 수면이 필요합니다";
+                    } else if (checklist.getTitle().equals("Exercise")) {
+                        return "어제 운동량이 부족했어요. 적당한 운동이 필요합니다";
+                    }
+                    return "";
+                })
+                .orElse("체크리스트를 잘 지켰습니다. 오늘 하루도 화이팅하세요"); // 필터링된 결과가 없을 경우 처리
+
+        return result;
     }
 }

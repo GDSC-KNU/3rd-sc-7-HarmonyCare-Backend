@@ -130,4 +130,19 @@ public class ChecklistController {
 
         return ResponseEntity.ok().body(ApiUtil.success(HttpStatus.OK));
     }
+
+    /**
+     * 팁 제공
+     *
+     * @return 팁 내용 제공
+     */
+    @Operation(summary = "팁 제공", description = "사용자에게 맞는 팁을 제공합니다")
+    @GetMapping("/tip")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<ApiSuccessResult<String>> provideTips(
+            @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        String tip = checkListService.provideTips(principalDetails.member());
+
+        return ResponseEntity.ok().body(ApiUtil.success(HttpStatus.OK, tip));
+    }
 }

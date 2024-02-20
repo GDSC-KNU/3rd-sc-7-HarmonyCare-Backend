@@ -34,6 +34,7 @@ public class AuthService {
     @Transactional
     public LoginResponse googleLogin(LoginRequest loginRequest) {
         String authcode = URLDecoder.decode(loginRequest.authcode(), StandardCharsets.UTF_8);
+        System.out.println("authcode = " + authcode);
 
         String accessToken = oauth2Service.getGoogleAccessToken(authcode);
 

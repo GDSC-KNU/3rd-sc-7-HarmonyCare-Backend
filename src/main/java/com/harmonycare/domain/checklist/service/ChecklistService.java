@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,7 +26,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class ChecklistService {
-    private final DayEntityRepository dayEntityRepository;
     private final ChecklistRepository checkListRepository;
 
     /**
@@ -35,16 +35,16 @@ public class ChecklistService {
     public Long saveCheckList(ChecklistSaveRequest requestBody, Member member) {
         LocalDateTime resultDateTime = DateTimeUtil.stringToLocalDateTime(requestBody.checkTime());
 
-        Checklist checklist = checkListRepository.save(Checklist.builder()
+        Checklist checklist = Checklist.builder()
                 .title(requestBody.title())
                 .checkTime(resultDateTime)
                 .isCheck(false)
                 .member(member)
-                .build());
-
+                .build();
 
         List<DayEntity> dayEntityList = Day.dayListToDayEntityList(requestBody.days(), checklist);
-        dayEntityRepository.saveAll(dayEntityList);
+        checklist.setDayList(dayEntityList);
+        checkListRepository.save(checklist);
 
         return checklist.getId();
     }
@@ -126,4 +126,41 @@ public class ChecklistService {
 
         return result;
     }
+
+    @Transactional
+    public void saveDefaultCheckList(Member member) {
+
+        Checklist defaultSleep = checkListRepository.findByMemberAndTitle(member, "Sleep");
+        Checklist defaultExercise = checkListRepository.findByMemberAndTitle(member, "Exercise");
+
+        List<Day> dayList = new ArrayList<>();
+        dayList.add(Day.valueOf(String.valueOf(LocalDateTime.now().toLocalDate().getDayOfWeek())));
+
+        if (defaultSleep == null) {
+            Checklist checklist = Checklist.builder()
+                    .title("Sleep")
+                    .checkTime(LocalDateTime.now())
+                    .isCheck(false)
+                    .member(member)
+                    .build();
+
+            List<DayEntity> dayEntityList = Day.dayListToDayEntityList(dayList, checklist);
+            checklist.setDayList(dayEntityList);
+            checkListRepository.save(checklist);
+        }
+
+        if (defaultExercise == null) {
+            Checklist checklist = checkListRepository.save(Checklist.builder()
+                    .title("Exercise")
+                    .checkTime(LocalDateTime.now())
+                    .isCheck(false)
+                    .member(member)
+                    .build());
+
+            List<DayEntity> dayEntityList = Day.dayListToDayEntityList(dayList, checklist);
+            checklist.setDayList(dayEntityList);
+            checkListRepository.save(checklist);
+        }
+    }
+
 }

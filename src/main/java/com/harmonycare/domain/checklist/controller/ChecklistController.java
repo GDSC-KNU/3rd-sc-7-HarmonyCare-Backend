@@ -76,6 +76,8 @@ public class ChecklistController {
     public ResponseEntity<ApiSuccessResult<List<ChecklistReadResponse>>> readMyChecklist(
             @AuthenticationPrincipal PrincipalDetails principalDetails
     ) {
+
+        checkListService.saveDefaultCheckList(principalDetails.member());
         List<ChecklistReadResponse> response = checkListService.readMyChecklist(principalDetails.member());
 
         return ResponseEntity.ok().body(ApiUtil.success(HttpStatus.OK, response));

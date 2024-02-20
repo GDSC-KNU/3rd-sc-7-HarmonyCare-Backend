@@ -78,4 +78,14 @@ public class Checklist {
         if (this.isCheck) this.isCheck = Boolean.FALSE;
         else this.isCheck = Boolean.TRUE;
     }
+
+    /**
+     * 연관관계 편의 메서드
+     * @param dayList
+     */
+    public void setDayList(List<DayEntity> dayList) {
+        this.dayList = dayList;
+        dayList.stream()
+                .forEach(dayEntity -> dayEntity.setChecklist(this));
+    }
 }

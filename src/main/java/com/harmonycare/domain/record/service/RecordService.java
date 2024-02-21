@@ -103,11 +103,10 @@ public class RecordService {
      * @param range {@param day}로부터 읽어올 날짜 범위 (단위: 일)
      * @return 기간 내의 모든 기록
      */
-    public List<RecordReadResponse> readRecordUsingRange(Member member, LocalDate day, Long range) {
+    public List<RecordReadResponse> readRecordUsingRange(Member member, LocalDate startTime, Long range) {
         List<Record> recordList = getMyRecordInFirstBaby(member);
 
-        LocalDateTime startTime = day.atStartOfDay();
-        LocalDateTime endTime = day.minusDays(range).atStartOfDay();
+        LocalDate endTime = startTime.minusDays(range);
 
         return recordList.stream()
                 .filter(record -> isWithinRange(record.getStartTime(), startTime, endTime))
@@ -115,8 +114,9 @@ public class RecordService {
                 .collect(Collectors.toList());
     }
 
-    private boolean isWithinRange(LocalDateTime dateTime, LocalDateTime startTime, LocalDateTime endTime) {
-        return !dateTime.isBefore(startTime) && dateTime.isBefore(endTime);
+    private boolean isWithinRange(LocalDateTime dateTime, LocalDate startTime, LocalDate endTime) {
+        if (dateTime.toLocalDate().isAfter(startTime)) return false;
+        return !dateTime.toLocalDate().isBefore(endTime);
     }
 
     private List<Record> getMyRecordInFirstBaby(Member member) {

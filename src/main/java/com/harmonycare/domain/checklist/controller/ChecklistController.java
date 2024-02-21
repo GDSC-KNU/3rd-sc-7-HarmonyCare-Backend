@@ -1,5 +1,6 @@
 package com.harmonycare.domain.checklist.controller;
 
+import com.harmonycare.domain.checklist.dto.request.ChecklistMeRequest;
 import com.harmonycare.domain.checklist.dto.request.ChecklistSaveRequest;
 import com.harmonycare.domain.checklist.dto.request.ChecklistUpdateRequest;
 import com.harmonycare.domain.checklist.dto.response.ChecklistReadResponse;
@@ -74,11 +75,13 @@ public class ChecklistController {
     @GetMapping("/me")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ApiSuccessResult<List<ChecklistReadResponse>>> readMyChecklist(
+            @RequestBody ChecklistMeRequest request,
             @AuthenticationPrincipal PrincipalDetails principalDetails
     ) {
 
-        checkListService.saveDefaultCheckList(principalDetails.member());
-        List<ChecklistReadResponse> response = checkListService.readMyChecklist(principalDetails.member());
+        checkListService.saveDefaultCheckList(request, principalDetails.member());
+        List<ChecklistReadResponse> response =
+                checkListService.readMyTodayChecklist(request, principalDetails.member());
 
         return ResponseEntity.ok().body(ApiUtil.success(HttpStatus.OK, response));
     }
@@ -142,8 +145,9 @@ public class ChecklistController {
     @GetMapping("/tip")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ApiSuccessResult<String>> provideTips(
+            @RequestBody ChecklistMeRequest request,
             @AuthenticationPrincipal PrincipalDetails principalDetails) {
-        String tip = checkListService.provideTips(principalDetails.member());
+        String tip = checkListService.provideTips(request, principalDetails.member());
 
         return ResponseEntity.ok().body(ApiUtil.success(HttpStatus.OK, tip));
     }

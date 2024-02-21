@@ -107,7 +107,7 @@ public class RecordService {
         List<Record> recordList = getMyRecordInFirstBaby(member);
 
         LocalDateTime startTime = day.atStartOfDay();
-        LocalDateTime endTime = day.plusDays(range).atStartOfDay();
+        LocalDateTime endTime = day.minusDays(range).atStartOfDay();
 
         return recordList.stream()
                 .filter(record -> isWithinRange(record.getStartTime(), startTime, endTime))

@@ -9,7 +9,6 @@ import com.harmonycare.domain.checklist.entity.Day;
 import com.harmonycare.domain.checklist.entity.DayEntity;
 import com.harmonycare.domain.checklist.exception.ChecklistErrorCode;
 import com.harmonycare.domain.checklist.repository.ChecklistRepository;
-import com.harmonycare.domain.checklist.repository.DayEntityRepository;
 import com.harmonycare.domain.member.entity.Member;
 import com.harmonycare.global.exception.GlobalException;
 import com.harmonycare.global.util.DateTimeUtil;
@@ -130,11 +129,13 @@ public class ChecklistService {
     @Transactional
     public void saveDefaultCheckList(ChecklistMeRequest request, Member member) {
         LocalDate localDate = LocalDate.now();
+        List<Checklist> checklistListSleep = checkListRepository.findAllByMemberAndTitle(member, "Sleep");
+        List<Checklist> checklistListExercise = checkListRepository.findAllByMemberAndTitle(member, "Exercise");
 
         List<Day> dayList = new ArrayList<>();
         dayList.add(Day.valueOf(String.valueOf(DateTimeUtil.stringToLocalDateTime(request.today()).toLocalDate().getDayOfWeek())));
 
-        if (!checkListRepository.existByMemberAndTitleAndCreatedDate(member, "Sleep", localDate)) {
+        if (notExistsByMemberAndTitleAndCreatedDate(checklistListSleep, localDate)) {
             Checklist checklist = Checklist.builder()
                     .title("Sleep")
                     .checkTime(LocalDateTime.now())
@@ -147,7 +148,7 @@ public class ChecklistService {
             checkListRepository.save(checklist);
         }
 
-        if (!checkListRepository.existByMemberAndTitleAndCreatedDate(member, "Exercise", localDate)) {
+        if (notExistsByMemberAndTitleAndCreatedDate(checklistListExercise, localDate)) {
             Checklist checklist = Checklist.builder()
                     .title("Exercise")
                     .checkTime(LocalDateTime.now())
@@ -159,5 +160,15 @@ public class ChecklistService {
             checklist.setDayList(dayEntityList);
             checkListRepository.save(checklist);
         }
+    }
+
+    private boolean notExistsByMemberAndTitleAndCreatedDate(List<Checklist> checklistList, LocalDate now) {
+        for (Checklist checklist : checklistList) {
+            if (checklist.getCreatedDate().toLocalDate().equals(now)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

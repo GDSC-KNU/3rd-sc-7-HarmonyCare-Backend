@@ -10,6 +10,5 @@ import java.util.List;
 public interface ChecklistRepository extends JpaRepository<Checklist, Long> {
     List<Checklist> findByMember(Member member);
     List<Checklist> findByMemberAndCheckTimeBetween(Member member, LocalDateTime startDate, LocalDateTime endDate);
-    Checklist findByMemberAndTitle(Member member, String title);
-
+    List<Checklist> findAllByMemberAndTitle(Member member, String title);
 }

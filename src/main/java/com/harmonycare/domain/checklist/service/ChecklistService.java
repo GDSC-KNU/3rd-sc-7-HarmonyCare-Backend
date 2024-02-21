@@ -1,5 +1,6 @@
 package com.harmonycare.domain.checklist.service;
 
+import com.harmonycare.domain.checklist.dto.request.ChecklistMeRequest;
 import com.harmonycare.domain.checklist.dto.request.ChecklistSaveRequest;
 import com.harmonycare.domain.checklist.dto.request.ChecklistUpdateRequest;
 import com.harmonycare.domain.checklist.dto.response.ChecklistReadResponse;
@@ -8,7 +9,6 @@ import com.harmonycare.domain.checklist.entity.Day;
 import com.harmonycare.domain.checklist.entity.DayEntity;
 import com.harmonycare.domain.checklist.exception.ChecklistErrorCode;
 import com.harmonycare.domain.checklist.repository.ChecklistRepository;
-import com.harmonycare.domain.checklist.repository.DayEntityRepository;
 import com.harmonycare.domain.member.entity.Member;
 import com.harmonycare.global.exception.GlobalException;
 import com.harmonycare.global.util.DateTimeUtil;
@@ -84,8 +84,10 @@ public class ChecklistService {
         checkListRepository.delete(deleteChecklist);
     }
 
-    public List<ChecklistReadResponse> readMyChecklist(Member member) {
-        List<Checklist> checklistList = checkListRepository.findByMember(member);
+    public List<ChecklistReadResponse> readMyTodayChecklist(ChecklistMeRequest request, Member member) {
+        LocalDate today =  DateTimeUtil.stringToLocalDateTime(request.today()).toLocalDate();
+        List<Checklist> checklistList = checkListRepository.findByMemberAndCheckTimeBetween(member,
+                today.atStartOfDay(), today.atTime(23, 59, 59));
 
         return checklistList.stream()
                 .map(ChecklistReadResponse::from)
@@ -103,8 +105,8 @@ public class ChecklistService {
         return checklist.getIsCheck();
     }
 
-    public String provideTips(Member member) {
-        LocalDate yesterday = LocalDateTime.now().minusDays(1L).toLocalDate();
+    public String provideTips(ChecklistMeRequest request, Member member) {
+        LocalDate yesterday = DateTimeUtil.stringToLocalDateTime(request.today()).minusDays(1L).toLocalDate();
         List<Checklist> yesterdayChecklists =
                 checkListRepository.findByMemberAndCheckTimeBetween(member, yesterday.atStartOfDay(),
                         yesterday.atTime(23, 59, 59));
@@ -125,14 +127,15 @@ public class ChecklistService {
     }
 
     @Transactional
-    public void saveDefaultCheckList(Member member) {
-        Checklist defaultSleep = checkListRepository.findByMemberAndTitle(member, "Sleep");
-        Checklist defaultExercise = checkListRepository.findByMemberAndTitle(member, "Exercise");
+    public void saveDefaultCheckList(ChecklistMeRequest request, Member member) {
+        LocalDate localDate = LocalDate.now();
+        List<Checklist> checklistListSleep = checkListRepository.findAllByMemberAndTitle(member, "Sleep");
+        List<Checklist> checklistListExercise = checkListRepository.findAllByMemberAndTitle(member, "Exercise");
 
         List<Day> dayList = new ArrayList<>();
-        dayList.add(Day.valueOf(String.valueOf(LocalDateTime.now().toLocalDate().getDayOfWeek())));
+        dayList.add(Day.valueOf(String.valueOf(DateTimeUtil.stringToLocalDateTime(request.today()).toLocalDate().getDayOfWeek())));
 
-        if (defaultSleep == null) {
+        if (notExistsByMemberAndTitleAndCreatedDate(checklistListSleep, localDate)) {
             Checklist checklist = Checklist.builder()
                     .title("Sleep")
                     .checkTime(LocalDateTime.now())
@@ -145,13 +148,13 @@ public class ChecklistService {
             checkListRepository.save(checklist);
         }
 
-        if (defaultExercise == null) {
-            Checklist checklist = checkListRepository.save(Checklist.builder()
+        if (notExistsByMemberAndTitleAndCreatedDate(checklistListExercise, localDate)) {
+            Checklist checklist = Checklist.builder()
                     .title("Exercise")
                     .checkTime(LocalDateTime.now())
                     .isCheck(false)
                     .member(member)
-                    .build());
+                    .build();
 
             List<DayEntity> dayEntityList = Day.dayListToDayEntityList(dayList, checklist);
             checklist.setDayList(dayEntityList);
@@ -159,4 +162,13 @@ public class ChecklistService {
         }
     }
 
+    private boolean notExistsByMemberAndTitleAndCreatedDate(List<Checklist> checklistList, LocalDate now) {
+        for (Checklist checklist : checklistList) {
+            if (checklist.getCreatedDate().toLocalDate().equals(now)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 }

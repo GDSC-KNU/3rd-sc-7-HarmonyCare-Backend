@@ -9,7 +9,6 @@ import com.harmonycare.domain.community.exception.CommunityErrorCode;
 import com.harmonycare.domain.community.repository.CommentRepository;
 import com.harmonycare.domain.community.repository.CommunityRepository;
 import com.harmonycare.domain.member.entity.Member;
-import com.harmonycare.domain.member.repository.MemberRepository;
 import com.harmonycare.global.exception.GlobalException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

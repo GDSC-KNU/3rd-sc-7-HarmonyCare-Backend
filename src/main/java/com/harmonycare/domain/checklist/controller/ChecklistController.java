@@ -1,6 +1,5 @@
 package com.harmonycare.domain.checklist.controller;
 
-import com.harmonycare.domain.checklist.dto.request.ChecklistMeRequest;
 import com.harmonycare.domain.checklist.dto.request.ChecklistSaveRequest;
 import com.harmonycare.domain.checklist.dto.request.ChecklistUpdateRequest;
 import com.harmonycare.domain.checklist.dto.response.ChecklistReadResponse;
@@ -10,6 +9,7 @@ import com.harmonycare.global.util.ApiUtil;
 import com.harmonycare.global.util.ApiUtil.ApiSuccessResult;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -21,8 +21,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -75,13 +77,13 @@ public class ChecklistController {
     @GetMapping("/me")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ApiSuccessResult<List<ChecklistReadResponse>>> readMyChecklist(
-            @RequestBody ChecklistMeRequest request,
+            @RequestParam("day") @DateTimeFormat(pattern = "yyyy-mm-dd") LocalDate day,
             @AuthenticationPrincipal PrincipalDetails principalDetails
     ) {
 
-        checkListService.saveDefaultCheckList(request, principalDetails.member());
+        checkListService.saveDefaultCheckList(day, principalDetails.member());
         List<ChecklistReadResponse> response =
-                checkListService.readMyTodayChecklist(request, principalDetails.member());
+                checkListService.readMyTodayChecklist(day, principalDetails.member());
 
         return ResponseEntity.ok().body(ApiUtil.success(HttpStatus.OK, response));
     }
@@ -145,9 +147,9 @@ public class ChecklistController {
     @GetMapping("/tip")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ApiSuccessResult<String>> provideTips(
-            @RequestBody ChecklistMeRequest request,
+            @RequestParam("day") @DateTimeFormat(pattern = "yyyy-mm-dd") LocalDate day,
             @AuthenticationPrincipal PrincipalDetails principalDetails) {
-        String tip = checkListService.provideTips(request, principalDetails.member());
+        String tip = checkListService.provideTips(day, principalDetails.member());
 
         return ResponseEntity.ok().body(ApiUtil.success(HttpStatus.OK, tip));
     }

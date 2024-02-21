@@ -1,6 +1,5 @@
 package com.harmonycare.domain.checklist.service;
 
-import com.harmonycare.domain.checklist.dto.request.ChecklistMeRequest;
 import com.harmonycare.domain.checklist.dto.request.ChecklistSaveRequest;
 import com.harmonycare.domain.checklist.dto.request.ChecklistUpdateRequest;
 import com.harmonycare.domain.checklist.dto.response.ChecklistReadResponse;
@@ -84,8 +83,7 @@ public class ChecklistService {
         checkListRepository.delete(deleteChecklist);
     }
 
-    public List<ChecklistReadResponse> readMyTodayChecklist(ChecklistMeRequest request, Member member) {
-        LocalDate today =  DateTimeUtil.stringToLocalDateTime(request.today()).toLocalDate();
+    public List<ChecklistReadResponse> readMyTodayChecklist(LocalDate today, Member member) {
         List<Checklist> checklistList = checkListRepository.findByMemberAndCheckTimeBetween(member,
                 today.atStartOfDay(), today.atTime(23, 59, 59));
 
@@ -105,8 +103,8 @@ public class ChecklistService {
         return checklist.getIsCheck();
     }
 
-    public String provideTips(ChecklistMeRequest request, Member member) {
-        LocalDate yesterday = DateTimeUtil.stringToLocalDateTime(request.today()).minusDays(1L).toLocalDate();
+    public String provideTips(LocalDate today, Member member) {
+        LocalDate yesterday = today.minusDays(1L);
         List<Checklist> yesterdayChecklists =
                 checkListRepository.findByMemberAndCheckTimeBetween(member, yesterday.atStartOfDay(),
                         yesterday.atTime(23, 59, 59));
@@ -127,13 +125,13 @@ public class ChecklistService {
     }
 
     @Transactional
-    public void saveDefaultCheckList(ChecklistMeRequest request, Member member) {
+    public void saveDefaultCheckList(LocalDate today, Member member) {
         LocalDate localDate = LocalDate.now();
         List<Checklist> checklistListSleep = checkListRepository.findAllByMemberAndTitle(member, "Sleep");
         List<Checklist> checklistListExercise = checkListRepository.findAllByMemberAndTitle(member, "Exercise");
 
         List<Day> dayList = new ArrayList<>();
-        dayList.add(Day.valueOf(String.valueOf(DateTimeUtil.stringToLocalDateTime(request.today()).toLocalDate().getDayOfWeek())));
+        dayList.add(Day.valueOf(String.valueOf(today.getDayOfWeek())));
 
         if (notExistsByMemberAndTitleAndCreatedDate(checklistListSleep, localDate)) {
             Checklist checklist = Checklist.builder()

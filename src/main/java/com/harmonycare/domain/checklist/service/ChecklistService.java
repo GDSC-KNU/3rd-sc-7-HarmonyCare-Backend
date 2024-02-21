@@ -129,14 +129,12 @@ public class ChecklistService {
 
     @Transactional
     public void saveDefaultCheckList(ChecklistMeRequest request, Member member) {
-
-        Checklist defaultSleep = checkListRepository.findByMemberAndTitle(member, "Sleep");
-        Checklist defaultExercise = checkListRepository.findByMemberAndTitle(member, "Exercise");
+        LocalDate localDate = LocalDate.now();
 
         List<Day> dayList = new ArrayList<>();
         dayList.add(Day.valueOf(String.valueOf(DateTimeUtil.stringToLocalDateTime(request.today()).toLocalDate().getDayOfWeek())));
 
-        if (defaultSleep == null) {
+        if (!checkListRepository.existByMemberAndTitleAndCreatedDate(member, "Sleep", localDate)) {
             Checklist checklist = Checklist.builder()
                     .title("Sleep")
                     .checkTime(LocalDateTime.now())
@@ -149,7 +147,7 @@ public class ChecklistService {
             checkListRepository.save(checklist);
         }
 
-        if (defaultExercise == null) {
+        if (!checkListRepository.existByMemberAndTitleAndCreatedDate(member, "Exercise", localDate)) {
             Checklist checklist = Checklist.builder()
                     .title("Exercise")
                     .checkTime(LocalDateTime.now())

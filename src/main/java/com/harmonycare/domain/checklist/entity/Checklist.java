@@ -18,6 +18,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -49,6 +50,9 @@ public class Checklist {
 
     @Column(name = "is_check")
     private Boolean isCheck;
+
+    @CreatedDate
+    private LocalDateTime createdDate;
 
     @Builder
     public Checklist(Member member, String title, List<DayEntity> dayList, LocalDateTime checkTime, Boolean isCheck) {

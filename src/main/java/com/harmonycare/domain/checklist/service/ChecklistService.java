@@ -126,14 +126,13 @@ public class ChecklistService {
 
     @Transactional
     public void saveDefaultCheckList(LocalDate today, Member member) {
-        LocalDate localDate = LocalDate.now();
         List<Checklist> checklistListSleep = checkListRepository.findAllByMemberAndTitle(member, "Sleep");
         List<Checklist> checklistListExercise = checkListRepository.findAllByMemberAndTitle(member, "Exercise");
 
         List<Day> dayList = new ArrayList<>();
         dayList.add(Day.valueOf(String.valueOf(today.getDayOfWeek())));
 
-        if (notExistsByMemberAndTitleAndCreatedDate(checklistListSleep, localDate)) {
+        if (notExistsByMemberAndTitleAndCreatedDate(checklistListSleep, today)) {
             Checklist checklist = Checklist.builder()
                     .title("Sleep")
                     .checkTime(LocalDateTime.now())
@@ -146,7 +145,7 @@ public class ChecklistService {
             checkListRepository.save(checklist);
         }
 
-        if (notExistsByMemberAndTitleAndCreatedDate(checklistListExercise, localDate)) {
+        if (notExistsByMemberAndTitleAndCreatedDate(checklistListExercise, today)) {
             Checklist checklist = Checklist.builder()
                     .title("Exercise")
                     .checkTime(LocalDateTime.now())

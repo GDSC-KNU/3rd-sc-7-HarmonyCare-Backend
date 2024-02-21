@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public enum Day {
-    MONDAY, TUESDAY, WEDNEDSDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY;
+    MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY;
 
     public static List<DayEntity> dayListToDayEntityList(List<Day> dayList) {
         return dayList.stream()

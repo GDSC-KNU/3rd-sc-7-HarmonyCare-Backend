@@ -103,14 +103,13 @@ public class ChecklistService {
         return checklist.getIsCheck();
     }
 
-    @Transactional(readOnly = true)
     public String provideTips(Member member) {
         LocalDate yesterday = LocalDateTime.now().minusDays(1L).toLocalDate();
         List<Checklist> yesterdayChecklists =
                 checkListRepository.findByMemberAndCheckTimeBetween(member, yesterday.atStartOfDay(),
                         yesterday.atTime(23, 59, 59));
 
-        String result = yesterdayChecklists.stream()
+        return yesterdayChecklists.stream()
                 .filter(checklist -> !checklist.getIsCheck())
                 .filter(checklist -> checklist.getTitle().equals("Sleep") || checklist.getTitle().equals("Exercise"))
                 .findFirst()
@@ -122,14 +121,11 @@ public class ChecklistService {
                     }
                     return "";
                 })
-                .orElse("체크리스트를 잘 지켰습니다. 오늘 하루도 화이팅하세요"); // 필터링된 결과가 없을 경우 처리
-
-        return result;
+                .orElse("체크리스트를 잘 지켰습니다. 오늘 하루도 화이팅하세요");
     }
 
     @Transactional
     public void saveDefaultCheckList(Member member) {
-
         Checklist defaultSleep = checkListRepository.findByMemberAndTitle(member, "Sleep");
         Checklist defaultExercise = checkListRepository.findByMemberAndTitle(member, "Exercise");
 

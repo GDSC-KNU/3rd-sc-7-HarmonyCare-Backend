@@ -9,11 +9,14 @@ import com.harmonycare.domain.checklist.entity.DayEntity;
 import com.harmonycare.domain.checklist.exception.ChecklistErrorCode;
 import com.harmonycare.domain.checklist.repository.ChecklistRepository;
 import com.harmonycare.domain.member.entity.Member;
+import com.harmonycare.gemini.dto.request.GeminiRequestDTO;
+import com.harmonycare.gemini.service.TextTemplateService;
 import com.harmonycare.global.exception.GlobalException;
 import com.harmonycare.global.util.DateTimeUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -26,6 +29,7 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class ChecklistService {
     private final ChecklistRepository checkListRepository;
+    private final RestTemplate restTemplate;
 
     /**
      * CREATE
@@ -104,10 +108,21 @@ public class ChecklistService {
     }
 
     public String provideTips(LocalDate today, Member member) {
+
+        TextTemplateService textTemplateService = new TextTemplateService(restTemplate);
+
         LocalDate yesterday = today.minusDays(1L);
         List<Checklist> yesterdayChecklists =
                 checkListRepository.findByMemberAndCheckTimeBetween(member, yesterday.atStartOfDay(),
                         yesterday.atTime(23, 59, 59));
+
+        String sleepPrompt = "I slept little last night because I was raising a baby. " +
+                "Please write a simple tip about this in 60 characters or less and one or two sentences.";
+
+        String exercisePrompt = "I couldn't meet my exercise goal yesterday because of childcare. " +
+                "Please tell us today’s simple tip about this in 60 characters or less and one or two sentences.";
+
+        String parentingPrompt = "Please write today’s simple parenting tip in 60 characters or less and one or two sentences.";
 
         return yesterdayChecklists.stream()
                 .filter(checklist -> !checklist.getIsCheck())
@@ -115,13 +130,13 @@ public class ChecklistService {
                 .findFirst()
                 .map(checklist -> {
                     if (checklist.getTitle().equals("Sleep")) {
-                        return "어젯밤에 잠이 부족했어요. 충분한 수면이 필요합니다";
+                        return textTemplateService.provideTip(new GeminiRequestDTO(sleepPrompt));
                     } else if (checklist.getTitle().equals("Exercise")) {
-                        return "어제 운동량이 부족했어요. 적당한 운동이 필요합니다";
+                        return textTemplateService.provideTip(new GeminiRequestDTO(exercisePrompt));
                     }
-                    return "";
+                    return textTemplateService.provideTip(new GeminiRequestDTO(parentingPrompt));
                 })
-                .orElse("체크리스트를 잘 지켰습니다. 오늘 하루도 화이팅하세요");
+                .orElse(textTemplateService.provideTip(new GeminiRequestDTO(parentingPrompt)));
     }
 
     @Transactional

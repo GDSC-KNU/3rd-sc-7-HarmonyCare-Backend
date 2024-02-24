@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class ChecklistService {
     private final ChecklistRepository checkListRepository;
-    private final RestTemplate restTemplate;
+    private final TextTemplateService textTemplateService;
 
     /**
      * CREATE
@@ -109,8 +109,6 @@ public class ChecklistService {
 
     public String provideTips(LocalDate today, Member member) {
 
-        TextTemplateService textTemplateService = new TextTemplateService(restTemplate);
-
         LocalDate yesterday = today.minusDays(1L);
         List<Checklist> yesterdayChecklists =
                 checkListRepository.findByMemberAndCheckTimeBetween(member, yesterday.atStartOfDay(),
@@ -122,7 +120,7 @@ public class ChecklistService {
         String exercisePrompt = "I couldn't meet my exercise goal yesterday because of childcare. " +
                 "Please tell us today’s simple tip about this in 60 characters or less and one or two sentences.";
 
-        String parentingPrompt = "Please write today’s simple parenting tip in 60 characters or less and one or two sentences.";
+        String parentingPrompt = "Give me a quick tip on parenting for a novice parent raising a newborn baby in one or two sentences up to 60 characters";
 
         return yesterdayChecklists.stream()
                 .filter(checklist -> !checklist.getIsCheck())
@@ -134,7 +132,7 @@ public class ChecklistService {
                     } else if (checklist.getTitle().equals("Exercise")) {
                         return textTemplateService.provideTip(new GeminiRequestDTO(exercisePrompt));
                     }
-                    return textTemplateService.provideTip(new GeminiRequestDTO(parentingPrompt));
+                    return "";
                 })
                 .orElse(textTemplateService.provideTip(new GeminiRequestDTO(parentingPrompt)));
     }

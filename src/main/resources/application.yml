@@ -1,7 +1,7 @@
 spring:
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
     properties:
       hibernate:
         show_sql: true
@@ -38,3 +38,7 @@ logging:
       descriptor:
         sql:
           BasicBinder: TRACE
+
+api:
+  key: AIzaSyCHXs_xFTCPeb6_wZJUDV5WmVBiH-Lb7sw
+  url: https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=

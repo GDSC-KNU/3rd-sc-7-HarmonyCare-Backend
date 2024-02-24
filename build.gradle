@@ -63,6 +63,9 @@ dependencies {
 	// Swagger
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0'
 
+	// Google gemini
+	implementation 'com.google.cloud:google-cloud-vertexai:0.4.0'
+
 }
 
 /*

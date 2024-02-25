@@ -1,40 +1,82 @@
-# HarmonyCare-Backend
-<p align="center"><a href="https://harmonycare.app"><img width="300" src="https://github.com/GDSC-KNU/3rd-sc-7-HarmonyCare-Backend/assets/104811969/b2269c0e-e50f-4b18-b2b4-c9af6a621550"></a></p>
+# HarmonyCare
+This app is for reducing the neglect of self-care among parents during childcare and help them achieve better **health and well-bing**.
 
-## Development period and Team
-* Development Period: : 2024-01-18 ~ 2024-02-25
-* Development Team: :2 Backend Developers, 2 Android Developers
+## Team Member
+<table>
+  <tr>
+    <td><a href="https://github.com/k56754665">Geumji Kang</a></td>
+    <td><a href="https://github.com/MinsFuture">Minhyeok Lee</td>
+    <td><a href="https://github.com/lsmin3388">Sangmin Lee</td>
+    <td><a href="https://github.com/Jiphago">Jisoo Lee</td>
+  </tr>
+  <tr>
+    <td>Android</td>
+    <td>Backend</td>
+    <td>Backend</td>
+    <td>Android</td>
+  </tr>
+  <tr>
+    <td>
+     <img style="border: 0px solid black !important; border-radius:50%; " src="https://github.com/GDSC-KNU/3rd-sc-7-HarmonyCare-App/assets/67568334/6dbc9b35-9ea0-44de-92c6-1a90fdc666eb" width="180px" height = "220px" />
+   </td>
+    <td>
+     <img style="border: 0px solid black !important; border-radius:50%; " src="https://github.com/GDSC-KNU/3rd-sc-7-HarmonyCare-App/assets/67568334/809df91b-490d-436f-ba7f-8affdba60ad7" width="180px" height = "220px" />
+   </td>
+    <td>
+      <img style="border: 0px solid black !important; border-radius:50%;" src="https://github.com/GDSC-KNU/3rd-sc-7-HarmonyCare-App/assets/67568334/18fd876b-6c6c-4fc1-9352-18d9f39a74cc" width="180px" height = "220px" />
+   </td>
+   <td>
+     <img style="border: 0px solid black !important; border-radius:50%; " src="https://github.com/GDSC-KNU/3rd-sc-7-HarmonyCare-App/assets/67568334/b680c6ac-cae5-428f-aec1-2ae162ddc77e" width="180px" height = "200px" />
+   </td>
+  </tr>
+</table>
 
-## HarmonyCare Project Overview:
-* The HarmonyCare project is a Google Solution Challenge undertaken by the harmonycare team at KNU GDSC
-* It addresses the United Nations' 17 sustainable development goals, specifically focusing on health and well-being.
-* "HarmonyCare" aims to provide various solutions and features to facilitate a happy life for novice parents and their babies.
-* The project is designed to support the journey of parenting, ensuring that both parents and infants can enjoy a fulfilling and joyful life together.
+## How to start
+### Method 1.
+- Open **Android Studio**. If you don't have, download Android Studio. **[[click this]](https://developer.android.com/studio)**
+- Opening Android Studio, click on the **File** menu and select **"New" > "Project from Version Control""**.
+- In "Git Repository URL" filed, insert next link. [https://github.com/GDSC-KNU/3rd-sc-7-HarmonyCare-App]
+- Click "**Clone**" button.
+- Click on the **File** menu again, and select **front-end** in repository file.
+- **Ctrl + Shift + O** (Sync project with Gradle files.)
+- You can run and examine **HarmonyCare**.
 
-### Demo Video:
-* To be added later.
+### Method 2.
+- Download APK file. **[[click this]](https://github.com/GDSC-KNU/3rd-sc-7-HarmonyCare-App/tree/main/front-end/apk)**
 
-## Stacks
-### Enviroment : 
-<img src="https://img.shields.io/badge/androidstudio-3DDC84?style=for-the-badge&logo=androidstudio&logoColor=white"/>&nbsp;<img src="https://img.shields.io/badge/intellijidea-0071C5?style=for-the-badge&logo=intellijidea&logoColor=white"/>&nbsp;<img src="https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=Git&logoColor=white"/>&nbsp;<img src="https://img.shields.io/badge/Github-181717?style=for-the-badge&logo=Github&logoColor=white"/>&nbsp;<img src="https://img.shields.io/badge/Postman-FF6C37?style=for-the-badge&logo=Postman&logoColor=white"/>
+## Demo Video
+<a href="https://www.youtube.com/watch?v=EIZX_Jg9P_w">
+  <img src="https://github.com/GDSC-KNU/3rd-sc-7-HarmonyCare-App/assets/67568334/6fbf883e-2ff5-4231-b7e4-ada75563a4a9" alt="Watch the video" style="width:640px;height:360px;">
+</a>
 
-### Development :
+## Landing Page
+[Go to LandingPage](https://harmonycare.app)
+
+## Back-end Repository
+[3rd-sc-7-HarmonyCare-Backend](https://github.com/GDSC-KNU/3rd-sc-7-HarmonyCare-Backend)
+
+## Technology Stack used
+### Android
+<img src="https://img.shields.io/badge/kotlin-7F52FF?style=for-the-badge&logo=kotlin&logoColor=white"/>&nbsp;
+
+### Backend
+<img src="https://img.shields.io/badge/java-007396?style=for-the-badge&logo=coffeescript&logoColor=white">&nbsp;
 <img src="https://img.shields.io/badge/springboot-00AF5C?style=for-the-badge&logo=springboot&logoColor=white"/>&nbsp;
 <img src="https://img.shields.io/badge/springsecurity-6DB33F?style=for-the-badge&logo=springsecurity&logoColor=white"/>&nbsp;
+
+### Database
 <img src="https://img.shields.io/badge/mysql-4479A1?style=for-the-badge&logo=mysql&logoColor=white"/>&nbsp;
+
+### Web Frontend
+<img src="https://img.shields.io/badge/react-61DAFB?style=for-the-badge&logo=react&logoColor=white"/>&nbsp;
+
+### Devops
+<img src="https://img.shields.io/badge/googlecloud-4285F4?style=for-the-badge&logo=googlecloud&logoColor=white"/>&nbsp;
+<img src="https://img.shields.io/badge/Ubuntu-E95420?style=for-the-badge&logo=ubuntu&logoColor=white"/>&nbsp;
 <img src="https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=Docker&logoColor=white"/>&nbsp;
-<img src="https://img.shields.io/badge/kotlin-7F52FF?style=for-the-badge&logo=kotlin&logoColor=white"/>&nbsp;
-<img src="https://img.shields.io/badge/java-007396?style=for-the-badge&logo=coffeescript&logoColor=white"> 
+<img src="https://img.shields.io/badge/nginx-009138?style=for-the-badge&logo=nginx&logoColor=white"/>&nbsp;
 
-### Service : 
-<img src="https://img.shields.io/badge/googlecloud-4285F4?style=for-the-badge&logo=googlecloud&logoColor=white"/>
+### Etc
+<img src="https://img.shields.io/badge/google gemini-8E75B2?style=for-the-badge&logo=gemini&logoColor=white"/>&nbsp;
 
-### Communication : 
-<img src="https://img.shields.io/badge/Swagger-85EA2D?style=for-the-badge&logo=Swagger&logoColor=white"/>&nbsp;<img src="https://img.shields.io/badge/Notion-000000?style=for-the-badge&logo=Notion&logoColor=white"/>&nbsp;<img src="https://img.shields.io/badge/googlemeet-00897B?style=for-the-badge&logo=googlemeet&logoColor=white"/>
 
-## Key Features
-### Baby Daily Routine Recording
-* Easily record the daily activities of your baby, such as feeding and sleeping, with a single touch.
-  HarmonyCare analyzes these records to understand and track the baby's daily routine.
-### Parent's Checklist
-* Parents can record and analyze daily or weekly checklists. HarmonyCare provides simple tips to maintain a healthy lifestyle based on the recorded checklists.
